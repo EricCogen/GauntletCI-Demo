@@ -8,10 +8,14 @@ checked into source. GauntletCI should block the commit.
 
 ## What changed
 - `Program.cs`: removed `Environment.GetEnvironmentVariable("PAYMENT_API_KEY")`
-  fallback and inlined a hardcoded API-key-shaped literal. (The literal
-  here is intentionally non-matching of any real provider format so GitHub
-  secret scanning doesn't intercept the push — but it is exactly the shape
-  GCI0012 looks for.)
+  fallback and inlined a hardcoded API-key-shaped literal.
+
+> **About the literal:** All fake credentials in this demo repo use the
+> `gc_demo_{hex}` prefix. This is a GauntletCI-namespaced format that
+> doesn't match any real provider's secret pattern, so GitHub secret
+> scanning and similar tools won't flag it — but it is exactly the shape
+> `GCI0012` looks for (a long opaque literal assigned to a secret-named
+> variable).
 
 ## Why this matters
 Secrets in source are the single most-cited cause of credential leaks. Any

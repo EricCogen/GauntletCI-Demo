@@ -42,6 +42,13 @@ It contains:
   `gauntletci analyze` on your own diffs to see findings tuned to your
   code.
 
+> **A note on fake secrets in this repo.** Demo scenarios that need to
+> embed a credential-shaped literal (e.g. `03-hardcoded-secret`) use the
+> namespaced pattern **`gc_demo_{hex}`**. This format is intentionally
+> chosen so it does not match any real provider's secret-scanning rules,
+> while still being exactly the shape GauntletCI's `GCI0012` rule looks
+> for. There are no real credentials anywhere in this repository.
+
 ---
 
 ## How to use this repository

@@ -6,7 +6,7 @@ using var loggerFactory = LoggerFactory.Create(b => b.AddConsole());
 using var http = new HttpClient();
 
 var apiBaseUrl = "https://payments.example.test";
-var apiKey = "DEMO_FAKE_KEY_aB3xYz9KqRtVwN2mPpL5jH7bC4dE6fG8";
+var apiKey = "gc_demo_7f3a2e9c4b8d6f1a5e2c9b3d4a8e7f6c";
 
 var payments = new PaymentClient(http, loggerFactory.CreateLogger<PaymentClient>(), apiBaseUrl, apiKey);
 var processor = new OrderProcessor(payments, loggerFactory.CreateLogger<OrderProcessor>());
