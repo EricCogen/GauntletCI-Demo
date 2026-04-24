@@ -47,6 +47,9 @@ public sealed class OrderProcessor
         if (result.Success)
         {
             order.MarkPaid(_clock.UtcNow);
+            _logger.LogInformation(
+                "Charged customer {Email} {Amount} {Currency} (order {OrderId})",
+                order.Customer.Email, priced.Total.Amount, priced.Total.Currency, order.Id);
         }
         else
         {
