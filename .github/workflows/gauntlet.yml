@@ -47,16 +47,35 @@ jobs:
             echo "sha=${{ github.sha }}" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Debug scenario-18 diff visibility
+        if: github.head_ref == 'demo/18-dependabot-api-drift'
+        run: |
+          echo "::group::scenario-18 debug"
+          echo "head_ref=${{ github.head_ref }}"
+          echo "target sha=${{ steps.target.outputs.sha }}"
+          echo "GITHUB_ACTOR (env)=${GITHUB_ACTOR:-<unset>}"
+          echo "git rev-parse HEAD=$(git rev-parse HEAD)"
+          echo "--- git log -3 of target ---"
+          git log --format='%h %p %s' -3 ${{ steps.target.outputs.sha }} || true
+          echo "--- diff stat parent..target ---"
+          git diff --stat ${{ steps.target.outputs.sha }}^..${{ steps.target.outputs.sha }} || true
+          echo "--- diff name-only ---"
+          git diff --name-only ${{ steps.target.outputs.sha }}^..${{ steps.target.outputs.sha }} || true
+          echo "::endgroup::"
+
       - name: Analyze commit
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Scenario 18 (dependabot-api-drift) needs GITHUB_ACTOR to look like a
-          # dependency-bot identity for GCI0052 to be observable. In real CI this
-          # env var is set automatically when Dependabot opens the PR; here we
-          # forge it so the canonical demo PR can demonstrate the rule. All other
-          # scenarios pass through the runner's actual actor.
-          GITHUB_ACTOR: ${{ github.head_ref == 'demo/18-dependabot-api-drift' && 'dependabot[bot]' || github.actor }}
         run: |
+          # Scenario 18 (dependabot-api-drift) needs GITHUB_ACTOR to look like a
+          # dependency-bot identity so GCI0052 is observable. In real CI this env
+          # var is set automatically when Dependabot opens the PR; here we forge
+          # it via a runtime export so the canonical demo PR demonstrates the
+          # rule. All other scenarios pass through the runner's actual actor.
+          if [ "${{ github.head_ref }}" = "demo/18-dependabot-api-drift" ]; then
+            export GITHUB_ACTOR='dependabot[bot]'
+            echo "[scenario-18] Forcing GITHUB_ACTOR=$GITHUB_ACTOR"
+          fi
           gauntletci analyze \
             --commit ${{ steps.target.outputs.sha }} \
             --no-banner \
