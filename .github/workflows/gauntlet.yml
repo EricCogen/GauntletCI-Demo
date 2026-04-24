@@ -50,6 +50,12 @@ jobs:
       - name: Analyze commit
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Scenario 18 (dependabot-api-drift) needs GITHUB_ACTOR to look like a
+          # dependency-bot identity for GCI0052 to be observable. In real CI this
+          # env var is set automatically when Dependabot opens the PR; here we
+          # forge it so the canonical demo PR can demonstrate the rule. All other
+          # scenarios pass through the runner's actual actor.
+          GITHUB_ACTOR: ${{ github.head_ref == 'demo/18-dependabot-api-drift' && 'dependabot[bot]' || github.actor }}
         run: |
           gauntletci analyze \
             --commit ${{ steps.target.outputs.sha }} \

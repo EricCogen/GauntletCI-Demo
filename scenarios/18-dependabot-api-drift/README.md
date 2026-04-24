@@ -36,11 +36,17 @@ conditions hold inside one PR:
 
 In real CI, condition (1) is set automatically by GitHub Actions when
 Dependabot is the PR author. To **simulate** that here without
-running an actual bot account, this scenario also overlays
-`.github/workflows/gauntlet.yml` to set
-`GITHUB_ACTOR: dependabot[bot]` on the analyze step. That single line
-is the only thing distinguishing this demo from a real Dependabot PR
-landing in your repo.
+running an actual bot account, the base `.github/workflows/gauntlet.yml`
+contains a single conditional that only fires for this scenario's
+branch:
+
+```yaml
+GITHUB_ACTOR: ${{ github.head_ref == 'demo/18-dependabot-api-drift'
+  && 'dependabot[bot]' || github.actor }}
+```
+
+Every other PR in the repo is analyzed under its real actor — only this
+one demo branch is treated as if Dependabot opened it.
 
 ## How to fix it
 - Split the PR — bots should only touch dependency manifests; code
