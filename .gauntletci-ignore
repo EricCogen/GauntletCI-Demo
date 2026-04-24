@@ -1,0 +1,37 @@
+# GauntletCI suppression file (demo repo)
+#
+# The scenarios/<id>/files/** tree contains DELIBERATELY broken overlays
+# that are applied to demo/<id> branches by reopen-scenarios.yml. They are
+# not production code; they exist only to be picked up by the gauntlet PR
+# check on those demo branches.
+#
+# When a PR adds or modifies these overlay files on main, gauntlet would
+# otherwise correctly fire on the deliberate flaws, blocking the docs PR.
+# Suppress every enabled rule for that path so the overlay files can be
+# managed without tripping the gate.
+#
+# Format: GCIxxxx:path/glob/**
+
+GCI0001:scenarios/**
+GCI0003:scenarios/**
+GCI0004:scenarios/**
+GCI0006:scenarios/**
+GCI0007:scenarios/**
+GCI0010:scenarios/**
+GCI0012:scenarios/**
+GCI0015:scenarios/**
+GCI0016:scenarios/**
+GCI0022:scenarios/**
+GCI0024:scenarios/**
+GCI0029:scenarios/**
+GCI0032:scenarios/**
+GCI0038:scenarios/**
+GCI0039:scenarios/**
+GCI0041:scenarios/**
+GCI0042:scenarios/**
+GCI0043:scenarios/**
+GCI0044:scenarios/**
+GCI0048:scenarios/**
+GCI0049:scenarios/**
+GCI0050:scenarios/**
+GCI_SYN_AGG:scenarios/**
