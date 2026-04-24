@@ -1,20 +1,30 @@
-using Microsoft.Extensions.Logging;
-using OrderService;
-using OrderService.Models;
+using OrderService.Abstractions;
+using OrderService.Logging;
+using OrderService.Payments;
+using OrderService.Persistence;
+using OrderService.Pricing;
+using OrderService.Processing;
 
-using var loggerFactory = LoggerFactory.Create(b => b.AddConsole());
-using var http = new HttpClient();
+var builder = WebApplication.CreateBuilder(args);
 
-var apiBaseUrl = Environment.GetEnvironmentVariable("PAYMENT_API_URL")
-    ?? "https://payments.example.test";
-var apiKey = Environment.GetEnvironmentVariable("PAYMENT_API_KEY")
-    ?? throw new InvalidOperationException("PAYMENT_API_KEY is not set");
+builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<IClock, SystemClock>();
+builder.Services.AddScoped<ICorrelationIdAccessor, HttpCorrelationIdAccessor>();
+builder.Services.AddSingleton<RequestLogger>();
+builder.Services.AddSingleton(_ => new TaxCalculator(0.0875m));
+builder.Services.AddSingleton<DiscountPolicy>();
+builder.Services.AddSingleton<PricingService>();
+builder.Services.AddSingleton<IOrderRepository, InMemoryOrderRepository>();
+builder.Services.AddSingleton(_ => new RetryPolicy(maxAttempts: 3));
+builder.Services.Configure<StripeOptions>(builder.Configuration.GetSection("Stripe"));
+builder.Services.AddSingleton<IPaymentClient, PaymentClient>();
+builder.Services.AddScoped<OrderProcessor>();
 
-var payments = new PaymentClient(http, loggerFactory.CreateLogger<PaymentClient>(), apiBaseUrl, apiKey);
-var processor = new OrderProcessor(payments, loggerFactory.CreateLogger<OrderProcessor>());
+var app = builder.Build();
+app.MapControllers();
+app.MapGet("/", () => "OrderService demo");
 
-var order = new Order(Id: "ord-1", CustomerId: "cust-7", Amount: 49.99m, Currency: "USD");
-var result = await processor.ProcessAsync(order);
+app.Run();
 
-Console.WriteLine(result.Success ? "OK" : $"FAIL: {result.Reason}");
-return result.Success ? 0 : 1;
+public partial class Program { }
