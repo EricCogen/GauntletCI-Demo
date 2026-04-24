@@ -40,7 +40,7 @@ public sealed class OrderProcessor
         order.MarkConfirmed();
         var priced = _pricing.Price(order);
 
-        PaymentResult result;
+        PaymentResult result = new PaymentResult(false, null, "Payment failed.");
         try
         {
             result = await _payments.ChargeAsync(
@@ -49,9 +49,6 @@ public sealed class OrderProcessor
         }
         catch
         {
-            // Soft-fail: payment provider sometimes throws on transient errors,
-            // we don't want to surface that to the caller mid-rollout.
-            result = new PaymentResult(false, null, "Payment failed.");
         }
 
         if (result.Success)
