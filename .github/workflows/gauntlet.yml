@@ -54,5 +54,4 @@ jobs:
           gauntletci analyze \
             --commit ${{ steps.target.outputs.sha }} \
             --no-banner \
-            --github-annotations \
-            ${{ github.event_name == 'pull_request' && '--github-pr-comments --github-checks' || '' }}
+            --github-annotations
