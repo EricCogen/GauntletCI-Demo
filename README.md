@@ -162,6 +162,8 @@ the same `OrderService` sample app. Verdict for every Tier 2 entry is
 | 14 | [todo-in-payment-flow](scenarios/14-todo-in-payment-flow/README.md) | `GCI0042` TODO/Stub Detection |
 | 15 | [non-idempotent-retry](scenarios/15-non-idempotent-retry/README.md) | `GCI0022` Idempotency & Retry Safety |
 | 16 | [tolist-in-loop](scenarios/16-tolist-in-loop/README.md) | `GCI0044` Performance Hotpath Risk |
+| 17 | [captive-dependency](scenarios/17-captive-dependency/README.md) | `GCI0038` Dependency Injection Safety |
+| 18 | [dependabot-api-drift](scenarios/18-dependabot-api-drift/README.md) | `GCI0052` Dependency Bot API Drift |
 
 Each scenario folder contains:
 - `README.md` — what the change is and what verdict to expect
