@@ -30,15 +30,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.DEMO_PR_TOKEN }}
 
       - name: Configure git
         run: |
-          git config user.name "gauntletci-demo-bot"
-          git config user.email "gauntletci-demo-bot@users.noreply.github.com"
+          git config user.name "Eric Cogen"
+          git config user.email "ericcogen@users.noreply.github.com"
 
       - name: Rebuild scenarios
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.DEMO_PR_TOKEN }}
           INPUT_SCENARIO: ${{ inputs.scenario }}
         run: bash scripts/reopen-scenarios.sh
