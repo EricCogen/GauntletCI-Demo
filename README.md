@@ -44,7 +44,7 @@ It contains:
 
 > **A note on fake secrets in this repo.** Demo scenarios that need to
 > embed a credential-shaped literal (e.g. `03-hardcoded-secret`) use the
-> namespaced pattern **`gc_demo_{hex}`**. This format is intentionally
+> namespaced pattern **`gci_demo_{hex}`**. This format is intentionally
 > chosen so it does not match any real provider's secret-scanning rules,
 > while still being exactly the shape GauntletCI's `GCI0012` rule looks
 > for. There are no real credentials anywhere in this repository.

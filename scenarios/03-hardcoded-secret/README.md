@@ -11,7 +11,7 @@ checked into source. GauntletCI should block the commit.
   fallback and inlined a hardcoded API-key-shaped literal.
 
 > **About the literal:** All fake credentials in this demo repo use the
-> `gc_demo_{hex}` prefix. This is a GauntletCI-namespaced format that
+> `gci_demo_{hex}` prefix. This is a GauntletCI-namespaced format that
 > doesn't match any real provider's secret pattern, so GitHub secret
 > scanning and similar tools won't flag it — but it is exactly the shape
 > `GCI0012` looks for (a long opaque literal assigned to a secret-named
