@@ -50,6 +50,11 @@ jobs:
       - name: Analyze commit
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # SCENARIO 18 ONLY: simulate a Dependabot-authored PR so that
+          # GCI0052 (Dependency Bot API Drift) can fire on this branch.
+          # In real CI, GITHUB_ACTOR is set automatically by GitHub Actions
+          # when Dependabot is the PR author — no override needed.
+          GITHUB_ACTOR: dependabot[bot]
         run: |
           gauntletci analyze \
             --commit ${{ steps.target.outputs.sha }} \
