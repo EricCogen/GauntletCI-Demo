@@ -41,8 +41,8 @@ public sealed class OrderProcessor
         var priced = _pricing.Price(order);
 
         var result = await _payments.ChargeAsync(
-            new PaymentRequest(order.Id, priced.Total, order.Customer.Email),
-            ct).ConfigureAwait(false);
+            new PaymentRequest(order.Id, priced.Total, order.Customer.Email))
+            .ConfigureAwait(false);
 
         if (result.Success)
         {
