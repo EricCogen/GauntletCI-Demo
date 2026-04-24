@@ -1,22 +1,30 @@
-# Hardcoded API key in source
+# 03 — Hardcoded API key in source
 
-**Expected verdict:** 🛑 Block — `GCI0012 SecurityRisk` (and likely
-`GCI0010 HardcodingAndConfiguration`)
-
-This PR replaces the env-var-driven `PAYMENT_API_KEY` with a literal token
-checked into source. GauntletCI should block the commit.
+**Expected verdict:** ❌ Fails — GauntletCI should fire **GCI0012** (hardcoded secret).
 
 ## What changed
-- `Program.cs`: removed `Environment.GetEnvironmentVariable("PAYMENT_API_KEY")`
-  fallback and inlined a hardcoded API-key-shaped literal.
+`src/OrderService/Program.cs` adds a `PostConfigure<StripeOptions>` block
+that hardcodes the API key into source:
 
-> **About the literal:** All fake credentials in this demo repo use the
-> `gci_demo_{hex}` prefix. This is a GauntletCI-namespaced format that
-> doesn't match any real provider's secret pattern, so GitHub secret
-> scanning and similar tools won't flag it — but it is exactly the shape
-> `GCI0012` looks for (a long opaque literal assigned to a secret-named
-> variable).
+```csharp
+builder.Services.PostConfigure<StripeOptions>(opts =>
+{
+    opts.ApiKey = "gci_demo_7f3a2e9c4b8d6f1a5e2c9b3d4a8e7f6c";
+});
+```
 
-## Why this matters
-Secrets in source are the single most-cited cause of credential leaks. Any
-pre-commit tool worth running must catch this pattern.
+The literal uses this repo's `gci_demo_{hex}` convention so it doesn't
+trigger any provider-specific scanner — but **GauntletCI's `GCI0012`
+heuristic recognises the credential-shaped string assigned to a
+property named `ApiKey`** and flags it.
+
+## Why this is risky
+- Anything checked into source is permanently leaked, even if you remove
+  it later (git history is forever).
+- Static analyzers like GitHub secret scanning would block real Stripe
+  keys (`sk_live_…`, `pk_live_…`) at push time, but a maintainer can
+  bypass that. GauntletCI catches it first.
+
+## What GauntletCI catches
+`GCI0012 Hardcoded secret` — credential-shaped literal assigned to an
+options property named `ApiKey`.

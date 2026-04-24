@@ -1,17 +1,27 @@
-# PII (customer id + raw amount) logged at Info
+# 05 — PII logged in payment success path
 
-**Expected verdict:** ⚠️ Warn — `GCI0029 PiiLoggingLeak`
-
-This PR adds a debug log line that includes the customer id and full charge
-amount in the success path. Even if it isn't strictly PII in this contrived
-example, the rule should warn on logging customer identifiers tied to
-financial values.
+**Expected verdict:** ❌ Fails — GauntletCI should fire **GCI0029** (PII in logs).
 
 ## What changed
-- `OrderProcessor.cs`: added
-  `_logger.LogInformation("Charged customer {CustomerId} email={Email} amount={Amount}", ...)`
-  with a fabricated email field.
+A new `LogInformation` call in `OrderProcessor.ProcessAsync` writes the
+customer's **email address** and the **raw charge amount** to logs after a
+successful payment, ostensibly "for the analytics rollout":
 
-## Why this matters
-PII in logs becomes a compliance problem (GDPR, PCI). GauntletCI flags
-common leak shapes before they reach prod log aggregators.
+```csharp
+_logger.LogInformation(
+    "Charged customer {Email} {Amount} {Currency} (order {OrderId})",
+    order.Customer.Email, priced.Total.Amount, priced.Total.Currency, order.Id);
+```
+
+## Why this is risky
+- Email addresses are personal data under GDPR/CCPA. Logs are routinely
+  shipped to third-party aggregators (Datadog, Splunk, CloudWatch) that
+  may not be in your data-processor agreement.
+- "Just for the rollout" log lines outlive their reason; they end up in
+  six months of cold storage that nobody audits.
+- The amount + email pair is identifying enough to correlate users across
+  systems.
+
+## What GauntletCI catches
+`GCI0029 PII in logs` — a structured log argument named `Email` (or
+matching email-like patterns) is being emitted to a logger.

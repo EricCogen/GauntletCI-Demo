@@ -1,21 +1,26 @@
-# Breaking change to public PaymentClient signature
+# 04 — Breaking change to public PaymentClient signature
 
-**Expected verdict:** 🛑 Block — `GCI0004 BreakingChangeRisk`
-
-This PR removes `apiKey` from `PaymentClient`'s constructor (now read from a
-static field). Any external caller constructing `PaymentClient` will fail to
-compile. GauntletCI should detect the public-surface break.
+**Expected verdict:** ❌ Fails — GauntletCI should fire **GCI0004** (breaking public API change).
 
 ## What changed
-- `PaymentClient.cs`: constructor signature
-  `(HttpClient, ILogger, string apiBaseUrl, string apiKey)` →
-  `(HttpClient, ILogger, string apiBaseUrl)`.
-- `Program.cs`: in-repo call site updated to compile.
-- **External callers** of `PaymentClient` (other repos, downstream
-  consumers) will still break — and *that* is exactly what GCI0004 flags
-  by inspecting the public surface diff itself, regardless of whether
-  internal callers got fixed.
+`IPaymentClient.ChargeAsync` lost its `CancellationToken ct = default`
+parameter — purportedly because nobody was passing one through. Five files
+were updated to compile against the new signature:
 
-## Why this matters
-Signature-level breaking changes are silent at the diff level until you
-trace every caller. GCI0004 surfaces them at PR review time.
+- `src/OrderService/Payments/IPaymentClient.cs` — interface definition
+- `src/OrderService/Payments/PaymentClient.cs` — implementation
+- `src/OrderService/Processing/OrderProcessor.cs` — call site
+- `src/OrderService/Controllers/PaymentsController.cs` — call site
+- `tests/OrderService.Tests/Fakes/FakePaymentClient.cs` — test fake
+
+## Why this is risky
+- `IPaymentClient` is a `public interface` — any downstream package
+  implementing it (a custom adapter, a mock) **will fail to compile** after
+  upgrading.
+- Removing a parameter is a binary-incompatible change even if no internal
+  caller uses it.
+- The diff looks like a routine cleanup, but it's a SemVer-major change.
+
+## What GauntletCI catches
+`GCI0004 Breaking public API change` — a public/protected member's
+signature changed in a non-additive way (parameter removed).

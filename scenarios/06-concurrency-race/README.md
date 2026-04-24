@@ -1,18 +1,32 @@
-# Concurrency: lock removed from shared counter increment
+# 06 — Concurrency: lock removed from shared counter increment
 
-**Expected verdict:** 🛑 Block — `GCI0016 ConcurrencyAndStateRisk`
-
-This PR drops the `lock (_sync) { _processedCount++; }` and replaces it
-with a bare `_processedCount++`. Under concurrent `ProcessAsync` calls the
-counter will lose updates. GauntletCI should detect the unprotected mutation
-of shared state.
+**Expected verdict:** ❌ Fails — GauntletCI should fire **GCI0016** (concurrency / non-atomic shared state).
 
 ## What changed
-- `OrderProcessor.cs`: `lock (_sync) { _processedCount++; }` → `_processedCount++;`
-  (the field is still read inside a lock from `ProcessedCount`, so the
-  read/write protocol is now inconsistent — also a classic smell).
+`OrderProcessor` gained a `static long _processedCount` for a metrics
+rollout, exposed via `ProcessedCount`. Inside `ProcessAsync` the counter
+is incremented with the bare `++` operator:
 
-## Why this matters
-Race conditions are notoriously hard to reproduce and rarely caught by
-unit tests. Catching them statically at PR time avoids a class of "works
-on my machine" production bugs.
+```csharp
+private static long _processedCount;
+public static long ProcessedCount => _processedCount;
+
+// inside ProcessAsync:
+_processedCount++;
+```
+
+## Why this is risky
+- `OrderProcessor` is registered as **scoped** in DI but `_processedCount`
+  is **static** — every concurrent HTTP request races on it.
+- `long++` on a 32-bit ABI is **two non-atomic operations**. Reads from
+  another thread can observe torn values.
+- Updates can be lost: under load the metric will under-count, sometimes
+  by a lot. The bug looks like "instrumentation drift" instead of a race.
+
+The fix is one of `Interlocked.Increment(ref _processedCount)`, a
+`lock`, or a proper metrics primitive (`Counter<long>`).
+
+## What GauntletCI catches
+`GCI0016 Concurrency / non-atomic shared state` — a `static` mutable
+field is being mutated without synchronisation in a code path reachable
+from concurrent request handling.

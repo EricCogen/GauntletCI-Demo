@@ -1,14 +1,16 @@
-# Safe typo fix in a log message
+# 01 — Safe typo / wording fix (clean)
 
-**Expected verdict:** ✅ Clean (Negligible — no findings)
-
-This PR fixes a typo in a log message string. No control flow, contracts, or
-behavior changes. GauntletCI should report zero findings.
+**Expected verdict:** ✅ Clean — GauntletCI should produce no findings.
 
 ## What changed
-- `OrderProcessor.cs`: log message `"Order {OrderId} processed"` →
-  `"Order {OrderId} processed successfully"`
+A cosmetic fix in `src/OrderService/Logging/RequestLogger.cs`:
 
-## Why this matters
-Demonstrates the tool's signal-to-noise: harmless string changes do not
-generate noise.
+- Capitalized `"HTTP"` to `"Http"` in the structured log format string.
+- Renamed the `cid=` field label to `correlationId=` for readability.
+
+No behavioural change. No new dependencies. No public-surface change.
+This is the kind of PR you want your CI to wave through.
+
+## Why this scenario exists
+GauntletCI must be quiet on safe changes. If this PR comes back with any
+finding, the noise/precision balance is off.
