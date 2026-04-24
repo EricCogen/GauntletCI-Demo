@@ -144,6 +144,25 @@ go to **Actions → Reopen demo scenarios → Run workflow**.
 | 05 | [pii-logging](scenarios/05-pii-logging/README.md) | ⚠️ Warn | `GCI0029` PII Logging Leak |
 | 06 | [concurrency-race](scenarios/06-concurrency-race/README.md) | 🛑 Block | `GCI0016` Concurrency & State Risk |
 
+### Tier 2 — one scenario per rule
+
+A second wave of scenarios, each isolating a single GauntletCI rule on
+the same `OrderService` sample app. Verdict for every Tier 2 entry is
+❌ Fails (the change exists to trip exactly one rule).
+
+| # | Scenario | Rule demonstrated |
+|---|----------|-------------------|
+| 07 | [magic-connection-string](scenarios/07-magic-connection-string/README.md) | `GCI0010` Hardcoding and Configuration |
+| 08 | [undisposed-httpclient](scenarios/08-undisposed-httpclient/README.md) | `GCI0024` Resource Lifecycle |
+| 09 | [insecure-random-token](scenarios/09-insecure-random-token/README.md) | `GCI0048` Insecure Random in Security Context |
+| 10 | [sql-column-truncation](scenarios/10-sql-column-truncation/README.md) | `GCI0050` SQL Column Truncation Risk |
+| 11 | [float-money-equality](scenarios/11-float-money-equality/README.md) | `GCI0049` Float/Double Equality Comparison |
+| 12 | [missing-null-guard](scenarios/12-missing-null-guard/README.md) | `GCI0006` Edge Case Handling |
+| 13 | [throw-bare-exception](scenarios/13-throw-bare-exception/README.md) | `GCI0032` Uncaught Exception Path |
+| 14 | [todo-in-payment-flow](scenarios/14-todo-in-payment-flow/README.md) | `GCI0042` TODO/Stub Detection |
+| 15 | [non-idempotent-retry](scenarios/15-non-idempotent-retry/README.md) | `GCI0022` Idempotency & Retry Safety |
+| 16 | [tolist-in-loop](scenarios/16-tolist-in-loop/README.md) | `GCI0044` Performance Hotpath Risk |
+
 Each scenario folder contains:
 - `README.md` — what the change is and what verdict to expect
 - `files/` — the overlay files that get copied onto `main` to construct
