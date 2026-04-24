@@ -1,0 +1,60 @@
+name: GauntletCI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  analyze:
+    name: Pre-commit risk analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Build (sanity check)
+        run: dotnet build OrderService.sln -c Release --nologo -v minimal
+
+      - name: Test
+        run: dotnet test OrderService.sln -c Release --no-build --nologo -v minimal
+
+      - name: Install GauntletCI from NuGet
+        run: dotnet tool install -g GauntletCI
+
+      - name: Print GauntletCI version
+        run: gauntletci --version
+
+      - name: Determine commit to analyze
+        id: target
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "sha=${{ github.event.pull_request.head.sha }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "sha=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Analyze commit
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gauntletci analyze \
+            --commit ${{ steps.target.outputs.sha }} \
+            --no-banner \
+            --github-annotations \
+            ${{ github.event_name == 'pull_request' && '--github-pr-comments --github-checks' || '' }}

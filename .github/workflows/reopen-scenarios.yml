@@ -1,0 +1,44 @@
+name: Reopen demo scenarios
+
+on:
+  workflow_dispatch:
+    inputs:
+      scenario:
+        description: "Scenario id to reopen (or 'all')"
+        required: true
+        default: "all"
+        type: choice
+        options:
+          - all
+          - 01-safe-typo-fix
+          - 02-silent-catch
+          - 03-hardcoded-secret
+          - 04-breaking-api-change
+          - 05-pii-logging
+          - 06-concurrency-race
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  rebuild:
+    name: Rebuild scenario branch and PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name "gauntletci-demo-bot"
+          git config user.email "gauntletci-demo-bot@users.noreply.github.com"
+
+      - name: Rebuild scenarios
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_SCENARIO: ${{ inputs.scenario }}
+        run: bash scripts/reopen-scenarios.sh

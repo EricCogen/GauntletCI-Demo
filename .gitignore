@@ -1,0 +1,9 @@
+bin/
+obj/
+*.user
+.vs/
+.vscode/
+.idea/
+*.suo
+TestResults/
+.gauntletci/
