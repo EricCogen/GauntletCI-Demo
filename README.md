@@ -53,7 +53,62 @@ It contains:
 
 ## How to use this repository
 
-### As a visitor (no install required)
+> **Why we recommend running it yourself.** This repo's canonical PRs are
+> intentionally read-only — we keep them as a stable, predictable showcase
+> rather than letting visitors mutate them. To experiment freely (try your
+> own diffs, edit scenarios, see what triggers what), **clone or fork** and
+> run the demo on your own copy. The two paths below cover both styles.
+
+### Run it yourself (recommended)
+
+This is the headline experience: you own the repo state, you control the
+runs, you can poke at anything without breaking the demo for the next
+visitor.
+
+#### Option 1 — Fork and use GitHub Actions
+
+1. **Fork** [`EricCogen/GauntletCI-Demo`](https://github.com/EricCogen/GauntletCI-Demo)
+   to your account.
+2. In your fork, go to **Actions → Reopen demo scenarios → Run workflow**
+   (the `Actions` tab may need to be enabled first — GitHub disables
+   workflows on forks by default; click "I understand my workflows, go ahead
+   and enable them").
+3. Choose `all` (or a single scenario id) and run.
+4. The workflow generates the `demo/*` branches and opens PRs against your
+   fork's `main`. Each PR triggers `gauntlet.yml`, which installs the
+   published GauntletCI tool from NuGet and runs it on the diff.
+5. Open any PR in your fork to see the **Files Changed** annotations,
+   **Conversation** review summary, and **Checks** verdict.
+
+> **Note:** `secrets.DEMO_PR_TOKEN` is *optional*. If your fork doesn't have
+> it, the workflow falls back to the built-in `GITHUB_TOKEN` and PRs are
+> authored by `github-actions[bot]` instead of a custom identity.
+
+#### Option 2 — Clone and run locally
+
+```bash
+git clone https://github.com/EricCogen/GauntletCI-Demo.git
+cd GauntletCI-Demo
+
+# Install the published tool
+dotnet tool install -g GauntletCI
+
+# Build the sample app
+dotnet build
+
+# Apply a scenario locally and analyze the staged diff
+cp -r scenarios/02-silent-catch/files/. .
+git add -A
+gauntletci analyze --staged
+```
+
+You'll get the same findings GauntletCI would produce in CI, in under a
+second, on your own machine.
+
+### Quick look (no install, no fork)
+
+If you just want to *see* what the tool produces without setting anything
+up:
 
 1. Open the **[Pull Requests tab](https://github.com/EricCogen/GauntletCI-Demo/pulls)**.
 2. Pick any open PR labelled `demo:*`.
@@ -69,34 +124,12 @@ The expected verdict for each scenario is documented in its
 [`scenarios/<id>/README.md`](scenarios/) so you can compare what you see
 against what the tool was meant to catch.
 
-### As a maintainer (regenerating the demo PRs)
+### Maintainer note (regenerating canonical PRs)
 
-If the PRs have been closed, drifted from `main`, or you want to test
-against a newly-published GauntletCI version:
-
-1. Go to **Actions → Reopen demo scenarios → Run workflow**.
-2. Choose a single scenario id, or `all` to rebuild every scenario.
-3. The workflow will:
-   - Force-push each `demo/<id>` branch from the current `main` plus the
-     scenario's overlay files.
-   - Close any prior open PR for that branch.
-   - Open a fresh PR against `main`, which immediately triggers the
-     `gauntlet.yml` workflow.
-
-### As a developer (running GauntletCI locally on this repo)
-
-```bash
-# Install the published tool
-dotnet tool install -g GauntletCI
-
-# Build the sample app
-dotnet build
-
-# Apply a scenario locally and analyze the staged diff
-cp -r scenarios/02-silent-catch/files/. .
-git add -A
-gauntletci analyze --staged
-```
+The canonical PRs in this repo auto-heal: `reopen-scenarios.yml` runs on a
+weekly schedule and on every push to `main`, so the showcase stays in sync
+with the latest published GauntletCI version. To force a rebuild manually,
+go to **Actions → Reopen demo scenarios → Run workflow**.
 
 ---
 
