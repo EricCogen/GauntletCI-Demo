@@ -1,61 +1,167 @@
 # GauntletCI Demo
 
-This repository exists to **show GauntletCI in action on real pull
-requests**. Browse the open PRs to see the tool's findings, severity
-classifications, inline annotations, and check verdicts on a small but
-realistic .NET service.
+> A live, runnable showcase of [**GauntletCI**](https://gauntletci.com) — a
+> deterministic pre-commit risk detector for .NET — operating on real GitHub
+> pull requests.
+>
+> **🔗 Main repository:** https://github.com/EricCogen/GauntletCI
+> **🌐 Website:** https://gauntletci.com
 
-## What's here
+---
 
-- `src/OrderService/` — small payment-processing sample app
-- `tests/OrderService.Tests/` — a couple of xUnit tests
-- `.gauntletci.json` — tool configuration
-- `.github/workflows/gauntlet.yml` — runs GauntletCI on every PR
-- `scenarios/` — canonical demo scenarios (overlay files + descriptions)
-- `.github/workflows/reopen-scenarios.yml` — workflow_dispatch action that
-  rebuilds every scenario branch and opens fresh PRs
+## What this repository is
 
-## How GauntletCI is installed in CI
+This repo is **not** a working application. It is a controlled demonstration
+environment whose only purpose is to let you see GauntletCI's output on
+realistic code changes — without installing anything yourself.
 
-The workflow installs the **published NuGet tool** so this repo
-demonstrates the same install path real users will follow:
+It contains:
 
-```yaml
-- run: dotnet tool install -g GauntletCI
-- run: gauntletci analyze --commit ${{ github.event.pull_request.head.sha }} \
-         --no-banner --github-annotations \
-         --github-pr-comments --github-checks
-```
+1. A **small but realistic .NET 8 sample app** (`OrderService` — a payment
+   processing service with a payment client and an order processor), so the
+   diffs being analyzed look like code you'd actually write.
+2. A **GitHub Actions workflow** (`.github/workflows/gauntlet.yml`) that
+   installs the published GauntletCI tool from NuGet on every PR and runs
+   it against the PR diff, posting findings as inline annotations, PR
+   review comments, and a Checks API verdict.
+3. A library of **canonical demo scenarios** under `scenarios/`. Each
+   scenario is a deliberate code change (silent exception swallow,
+   hardcoded secret, breaking API change, PII in logs, concurrency race,
+   and a no-op control) that exercises a different GauntletCI rule.
+4. A **`workflow_dispatch` action** (`.github/workflows/reopen-scenarios.yml`)
+   that rebuilds every scenario branch and reopens its PR on demand. This
+   lets the demo regenerate itself against the latest published tool
+   version without manual git work.
 
-## Demo scenarios
+## What this repository is *not*
 
-| # | Scenario | Expected verdict | Demonstrates |
-|---|----------|------------------|--------------|
-| 01 | [safe-typo-fix](scenarios/01-safe-typo-fix/README.md) | ✅ Clean | Low false-positive rate |
-| 02 | [silent-catch](scenarios/02-silent-catch/README.md) | 🛑 Block (GCI0007) | Error-handling integrity |
-| 03 | [hardcoded-secret](scenarios/03-hardcoded-secret/README.md) | 🛑 Block (GCI0012) | Security risk detection |
-| 04 | [breaking-api-change](scenarios/04-breaking-api-change/README.md) | 🛑 Block (GCI0004) | Public-surface diffing |
-| 05 | [pii-logging](scenarios/05-pii-logging/README.md) | ⚠️ Warn (GCI0029) | PII / compliance leaks |
-| 06 | [concurrency-race](scenarios/06-concurrency-race/README.md) | 🛑 Block (GCI0016) | Concurrency state risk |
+- ❌ Not a production-quality reference architecture for `OrderService`.
+- ❌ Not a place to file GauntletCI bugs or feature requests — please use
+  the [main repo's issues](https://github.com/EricCogen/GauntletCI/issues).
+- ❌ Not a substitute for real-world testing on your own codebase. Run
+  `gauntletci analyze` on your own diffs to see findings tuned to your
+  code.
 
-## Re-opening the demo PRs
+---
 
-If the PRs have been closed or you want to refresh them against the latest
-`main`, run the **Reopen demo scenarios** workflow (Actions tab →
-*Reopen demo scenarios* → *Run workflow*). You can target one scenario or
-`all`.
+## How to use this repository
 
-## Running locally
+### As a visitor (no install required)
+
+1. Open the **[Pull Requests tab](https://github.com/EricCogen/GauntletCI-Demo/pulls)**.
+2. Pick any open PR labelled `demo:*`.
+3. Look at:
+   - The **Files Changed** tab — GauntletCI's inline annotations appear
+     alongside the diff lines that triggered them.
+   - The **Conversation** tab — GauntletCI posts a PR review summarising
+     the findings, severity, and rationale.
+   - The **Checks** tab — a GauntletCI check run shows the overall
+     pass/fail verdict.
+
+The expected verdict for each scenario is documented in its
+[`scenarios/<id>/README.md`](scenarios/) so you can compare what you see
+against what the tool was meant to catch.
+
+### As a maintainer (regenerating the demo PRs)
+
+If the PRs have been closed, drifted from `main`, or you want to test
+against a newly-published GauntletCI version:
+
+1. Go to **Actions → Reopen demo scenarios → Run workflow**.
+2. Choose a single scenario id, or `all` to rebuild every scenario.
+3. The workflow will:
+   - Force-push each `demo/<id>` branch from the current `main` plus the
+     scenario's overlay files.
+   - Close any prior open PR for that branch.
+   - Open a fresh PR against `main`, which immediately triggers the
+     `gauntlet.yml` workflow.
+
+### As a developer (running GauntletCI locally on this repo)
 
 ```bash
+# Install the published tool
 dotnet tool install -g GauntletCI
+
+# Build the sample app
 dotnet build
+
+# Apply a scenario locally and analyze the staged diff
+cp -r scenarios/02-silent-catch/files/. .
+git add -A
 gauntletci analyze --staged
 ```
 
-## About GauntletCI
+---
 
-GauntletCI is a deterministic pre-commit risk detector for .NET
-codebases. It runs as a CLI, dotnet tool, MCP server, GitHub Action, or
-Docker container. See the main repo:
-**[github.com/EricCogen/GauntletCI](https://github.com/EricCogen/GauntletCI)**.
+## Scenarios
+
+| # | Scenario | Expected verdict | Rule(s) demonstrated |
+|---|----------|------------------|----------------------|
+| 01 | [safe-typo-fix](scenarios/01-safe-typo-fix/README.md) | ✅ Clean | (none — low-noise control) |
+| 02 | [silent-catch](scenarios/02-silent-catch/README.md) | 🛑 Block | `GCI0007` Error Handling Integrity |
+| 03 | [hardcoded-secret](scenarios/03-hardcoded-secret/README.md) | 🛑 Block | `GCI0012` Security Risk |
+| 04 | [breaking-api-change](scenarios/04-breaking-api-change/README.md) | 🛑 Block | `GCI0004` Breaking Change Risk |
+| 05 | [pii-logging](scenarios/05-pii-logging/README.md) | ⚠️ Warn | `GCI0029` PII Logging Leak |
+| 06 | [concurrency-race](scenarios/06-concurrency-race/README.md) | 🛑 Block | `GCI0016` Concurrency & State Risk |
+
+Each scenario folder contains:
+- `README.md` — what the change is and what verdict to expect
+- `files/` — the overlay files that get copied onto `main` to construct
+  the demo branch
+
+---
+
+## How the CI install works
+
+The CI workflow uses the **same install path real users follow**, so the
+demo also serves as a smoke test of the published tool:
+
+```yaml
+- run: dotnet tool install -g GauntletCI
+- run: |
+    gauntletci analyze \
+      --commit ${{ github.event.pull_request.head.sha }} \
+      --no-banner \
+      --github-annotations \
+      --github-pr-comments \
+      --github-checks
+```
+
+No build-from-source, no pre-release feeds — just `dotnet tool install`
+from NuGet.
+
+---
+
+## Repository layout
+
+```
+GauntletCI-Demo/
+├── src/OrderService/             # sample .NET 8 app
+├── tests/OrderService.Tests/     # xUnit tests for the sample app
+├── scenarios/                    # canonical demo scenarios
+│   ├── 01-safe-typo-fix/
+│   ├── 02-silent-catch/
+│   ├── 03-hardcoded-secret/
+│   ├── 04-breaking-api-change/
+│   ├── 05-pii-logging/
+│   └── 06-concurrency-race/
+├── .github/workflows/
+│   ├── gauntlet.yml              # PR check that runs GauntletCI
+│   └── reopen-scenarios.yml      # rebuilds scenario branches on demand
+├── scripts/reopen-scenarios.sh   # logic for the rebuild workflow
+├── .gauntletci.json              # GauntletCI rule configuration
+└── OrderService.sln
+```
+
+---
+
+## Learn more
+
+- 🌐 **Website:** https://gauntletci.com
+- 📦 **Source:** https://github.com/EricCogen/GauntletCI
+- 📚 **Docs:** https://gauntletci.com/docs
+- 💬 **Issues / questions:** https://github.com/EricCogen/GauntletCI/issues
+
+## License
+
+MIT — see [LICENSE](LICENSE).
