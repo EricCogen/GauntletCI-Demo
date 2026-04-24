@@ -258,7 +258,7 @@ from NuGet.
 GauntletCI-Demo/
 ├── src/OrderService/             # sample .NET 8 app
 ├── tests/OrderService.Tests/     # xUnit tests for the sample app
-├── scenarios/                    # canonical demo scenarios (16 total)
+├── scenarios/                    # canonical demo scenarios (18 total)
 │   ├── 01-safe-typo-fix/         # tier 1 — control + 5 headline rules
 │   ├── 02-silent-catch/
 │   ├── 03-hardcoded-secret/
@@ -274,7 +274,9 @@ GauntletCI-Demo/
 │   ├── 13-throw-bare-exception/
 │   ├── 14-todo-in-payment-flow/
 │   ├── 15-non-idempotent-retry/
-│   └── 16-tolist-in-loop/
+│   ├── 16-tolist-in-loop/
+│   ├── 17-captive-dependency/
+│   └── 18-dependabot-api-drift/
 ├── .github/workflows/
 │   ├── gauntlet.yml              # PR check that runs GauntletCI
 │   └── reopen-scenarios.yml      # rebuilds scenario branches on demand
