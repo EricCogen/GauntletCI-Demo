@@ -1,7 +1,7 @@
 name: GauntletCI
 
 on:
-  pull_request:
+  pull_request_target:
     branches: [main]
   workflow_dispatch:
 
@@ -19,6 +19,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Setup .NET 8
         uses: actions/setup-dotnet@v4
@@ -41,7 +42,7 @@ jobs:
         id: target
         shell: bash
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
+          if [ "${{ github.event_name }}" = "pull_request_target" ]; then
             echo "sha=${{ github.event.pull_request.head.sha }}" >> "$GITHUB_OUTPUT"
           else
             echo "sha=${{ github.sha }}" >> "$GITHUB_OUTPUT"
@@ -55,4 +56,4 @@ jobs:
             --commit ${{ steps.target.outputs.sha }} \
             --no-banner \
             --github-annotations \
-            ${{ github.event_name == 'pull_request' && '--github-pr-comments --github-checks' || '' }}
+            ${{ github.event_name == 'pull_request_target' && '--github-pr-comments --github-checks' || '' }}
