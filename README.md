@@ -65,26 +65,52 @@ This is the headline experience: you own the repo state, you control the
 runs, you can poke at anything without breaking the demo for the next
 visitor.
 
+> **Prerequisites (both paths):**
+> - **.NET 8 SDK** — install from <https://dotnet.microsoft.com/download/dotnet/8.0> (the demo CI uses `8.0.x`)
+> - **Git** — any recent version
+> - **A GitHub account** — only required for the fork path
+
 #### Option 1 — Fork and use GitHub Actions
 
 1. **Fork** [`EricCogen/GauntletCI-Demo`](https://github.com/EricCogen/GauntletCI-Demo)
    to your account.
-2. In your fork, go to **Actions → Reopen demo scenarios → Run workflow**
-   (the `Actions` tab may need to be enabled first — GitHub disables
-   workflows on forks by default; click "I understand my workflows, go ahead
-   and enable them").
-3. Choose `all` (or a single scenario id) and run.
-4. The workflow generates the `demo/*` branches and opens PRs against your
-   fork's `main`. Each PR triggers `gauntlet.yml`, which installs the
-   published GauntletCI tool from NuGet and runs it on the diff.
-5. Open any PR in your fork to see the **Files Changed** annotations,
-   **Conversation** review summary, and **Checks** verdict.
+2. **⚠️ Enable Actions on your fork.** GitHub disables workflows on new
+   forks by default. In your fork, click the **Actions** tab. If you see
+   the banner *"Workflows aren't being run on this forked repository"*,
+   click **"I understand my workflows, go ahead and enable them"**. The
+   reopen-scenarios workflow will not appear until you do this.
+3. Go to **Actions → Reopen demo scenarios → Run workflow**.
+4. Type `all` (or a single scenario folder name like `03-hardcoded-secret`)
+   into the input and click **Run workflow**.
+5. **Expect ~2 minutes** for the first run: the workflow rebuilds the
+   `demo/*` branches and opens one PR per scenario. Each PR then triggers
+   `gauntlet.yml`, which installs the published GauntletCI tool from
+   NuGet (~30 s) and runs it on the diff (~5 s).
+6. Open any of the new PRs in your fork to see the **Files Changed**
+   annotations, **Conversation** review summary, and **Checks** verdict.
 
 > **Note:** `secrets.DEMO_PR_TOKEN` is *optional*. If your fork doesn't have
 > it, the workflow falls back to the built-in `GITHUB_TOKEN` and PRs are
 > authored by `github-actions[bot]` instead of a custom identity.
 
+**Did it work?**
+- ✅ Expected: a fresh batch of PRs titled `demo: <scenario-id>` appears
+  in your fork's **Pull requests** tab, each with a green or red
+  **GauntletCI** check (matching the verdict in
+  [`scenarios/<id>/README.md`](scenarios/)).
+- ❌ *No PRs appeared* — most often the Actions tab still has the disable
+  banner. Re-check step 2.
+- ❌ *Workflow failed in `Install GauntletCI` step* — usually a transient
+  NuGet outage. Re-run from the **Actions** tab.
+- ❌ *Workflow failed in `Open PR` step with 403* — your fork has branch
+  protection on `main` that blocks the bot. Either remove the rule or
+  set `DEMO_PR_TOKEN` to a PAT that can bypass it.
+
 #### Option 2 — Clone and run locally
+
+This path is fastest if you already have the .NET 8 SDK on your machine.
+
+**bash / macOS / Linux:**
 
 ```bash
 git clone https://github.com/EricCogen/GauntletCI-Demo.git
@@ -102,8 +128,41 @@ git add -A
 gauntletci analyze --staged
 ```
 
+**PowerShell / Windows:**
+
+```powershell
+git clone https://github.com/EricCogen/GauntletCI-Demo.git
+Set-Location GauntletCI-Demo
+
+# Install the published tool
+dotnet tool install -g GauntletCI
+
+# Build the sample app
+dotnet build
+
+# Apply a scenario locally and analyze the staged diff
+Copy-Item -Recurse -Force scenarios/02-silent-catch/files/* .
+git add -A
+gauntletci analyze --staged
+```
+
 You'll get the same findings GauntletCI would produce in CI, in under a
 second, on your own machine.
+
+**Did it work?**
+- ✅ Expected: console output ending in `🛑 Block` with a `[GCI0007] Error
+  Handling Integrity` finding pointing at the silent `catch { }` block
+  that the scenario introduces.
+- ❌ *`gauntletci: command not found`* — the dotnet global tools folder
+  isn't on your `PATH`. Either restart your shell or add
+  `$HOME/.dotnet/tools` (Unix) / `%USERPROFILE%\.dotnet\tools` (Windows)
+  to `PATH`.
+- ❌ *`error: pathspec 'scenarios/02-silent-catch/files/.' did not match
+  any file(s)`* — you're not in the repo root. Run `cd GauntletCI-Demo`
+  first.
+- ❌ *Tool installs but `analyze --staged` reports `0 findings`* — the
+  scenario files weren't actually staged. Check `git status` and re-run
+  `git add -A`.
 
 ### Quick look (no install, no fork)
 
@@ -197,18 +256,29 @@ from NuGet.
 GauntletCI-Demo/
 ├── src/OrderService/             # sample .NET 8 app
 ├── tests/OrderService.Tests/     # xUnit tests for the sample app
-├── scenarios/                    # canonical demo scenarios
-│   ├── 01-safe-typo-fix/
+├── scenarios/                    # canonical demo scenarios (16 total)
+│   ├── 01-safe-typo-fix/         # tier 1 — control + 5 headline rules
 │   ├── 02-silent-catch/
 │   ├── 03-hardcoded-secret/
 │   ├── 04-breaking-api-change/
 │   ├── 05-pii-logging/
-│   └── 06-concurrency-race/
+│   ├── 06-concurrency-race/
+│   ├── 07-magic-connection-string/  # tier 2 — one rule per scenario
+│   ├── 08-undisposed-httpclient/
+│   ├── 09-insecure-random-token/
+│   ├── 10-sql-column-truncation/
+│   ├── 11-float-money-equality/
+│   ├── 12-missing-null-guard/
+│   ├── 13-throw-bare-exception/
+│   ├── 14-todo-in-payment-flow/
+│   ├── 15-non-idempotent-retry/
+│   └── 16-tolist-in-loop/
 ├── .github/workflows/
 │   ├── gauntlet.yml              # PR check that runs GauntletCI
 │   └── reopen-scenarios.yml      # rebuilds scenario branches on demand
 ├── scripts/reopen-scenarios.sh   # logic for the rebuild workflow
 ├── .gauntletci.json              # GauntletCI rule configuration
+├── .gauntletci-ignore            # path-scoped rule suppressions
 └── OrderService.sln
 ```
 
