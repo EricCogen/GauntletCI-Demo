@@ -3,19 +3,16 @@ name: Reopen demo scenarios
 on:
   workflow_dispatch:
     inputs:
+      # NOTE: GitHub caps `type: choice` dropdowns at 10 options. With the
+      # tier-2 expansion this repo now ships 16 scenarios, so we use a free-form
+      # string input instead. Pass either 'all' or a single scenario folder
+      # name (e.g. '03-hardcoded-secret'). The handler script enumerates
+      # `scenarios/*/` for the 'all' case, so no allow-list lives in CI.
       scenario:
-        description: "Scenario id to reopen (or 'all')"
+        description: "Scenario id to reopen (or 'all'). Folder name under scenarios/."
         required: true
         default: "all"
-        type: choice
-        options:
-          - all
-          - 01-safe-typo-fix
-          - 02-silent-catch
-          - 03-hardcoded-secret
-          - 04-breaking-api-change
-          - 05-pii-logging
-          - 06-concurrency-race
+        type: string
 
 permissions:
   contents: write
