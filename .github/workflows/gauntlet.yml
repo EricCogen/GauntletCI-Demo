@@ -32,7 +32,7 @@ jobs:
         run: dotnet test OrderService.sln -c Release --no-build --nologo -v minimal
 
       - name: Install GauntletCI from NuGet
-        run: dotnet tool install -g GauntletCI
+        run: dotnet tool install -g GauntletCI --version 2.0.1
 
       - name: Print GauntletCI version
         run: gauntletci --version
@@ -54,4 +54,6 @@ jobs:
           gauntletci analyze \
             --commit ${{ steps.target.outputs.sha }} \
             --no-banner \
-            --github-annotations
+            --github-annotations \
+            --github-pr-comments \
+            --github-checks
