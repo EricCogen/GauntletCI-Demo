@@ -13,6 +13,18 @@ on:
         required: true
         default: "all"
         type: string
+  schedule:
+    # Weekly self-heal: rebuild canonical demo PRs every Monday 06:00 UTC so
+    # they stay in sync with the latest published GauntletCI version.
+    - cron: '0 6 * * 1'
+  push:
+    branches: [main]
+    # Re-run when scenarios or the rebuild script itself change, so the
+    # canonical PRs reflect the new shape of the demo.
+    paths:
+      - 'scenarios/**'
+      - 'scripts/reopen-scenarios.sh'
+      - '.github/workflows/reopen-scenarios.yml'
 
 permissions:
   contents: write
@@ -24,10 +36,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.DEMO_PR_TOKEN }}
+          # DEMO_PR_TOKEN is optional. When absent (e.g. on a visitor's fork)
+          # we fall back to the built-in GITHUB_TOKEN. Authored PRs will then
+          # appear under github-actions[bot] instead of a custom identity.
+          token: ${{ secrets.DEMO_PR_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Configure git
         run: |
@@ -36,6 +51,7 @@ jobs:
 
       - name: Rebuild scenarios
         env:
-          GH_TOKEN: ${{ secrets.DEMO_PR_TOKEN }}
-          INPUT_SCENARIO: ${{ inputs.scenario }}
+          GH_TOKEN: ${{ secrets.DEMO_PR_TOKEN || secrets.GITHUB_TOKEN }}
+          # Schedule and push events have no `inputs.scenario`; default to 'all'.
+          INPUT_SCENARIO: ${{ inputs.scenario || 'all' }}
         run: bash scripts/reopen-scenarios.sh
