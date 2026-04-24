@@ -1,4 +1,5 @@
 {
+  "exitOn": "Warn",
   "rules": {
     "GCI0001": { "enabled": true },
     "GCI0003": { "enabled": true },
