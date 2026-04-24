@@ -40,14 +40,22 @@ run_one() {
 
     git checkout -B "$branch" origin/main
 
-    # Copy overlay files from scenario into repo.
-    (cd "$dir/files" && find . -type f -print0) | while IFS= read -r -d '' f; do
+    # Copy overlay files from scenario into repo and stage only those paths.
+    overlay_paths=()
+    while IFS= read -r -d '' f; do
         rel="${f#./}"
+        overlay_paths+=("$rel")
         mkdir -p "$(dirname "$rel")"
         cp "$dir/files/$rel" "$rel"
-    done
+    done < <(cd "$dir/files" && find . -type f -print0)
 
-    git add -A
+    if [ ${#overlay_paths[@]} -eq 0 ]; then
+        echo "No overlay files for $id; skipping."
+        git checkout main
+        return 0
+    fi
+
+    git add -- "${overlay_paths[@]}"
     if git diff --cached --quiet; then
         echo "No changes for $id; skipping."
         git checkout main
