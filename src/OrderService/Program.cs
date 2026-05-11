@@ -21,6 +21,12 @@ builder.Services.Configure<StripeOptions>(builder.Configuration.GetSection("Stri
 builder.Services.AddSingleton<IPaymentClient, PaymentClient>();
 builder.Services.AddScoped<OrderProcessor>();
 
+// Order-database connection — temporarily inlined while the
+// secret-store wiring is being moved out of the legacy host.
+const string ordersDbConnection =
+    "Server=tcp:orders-db.internal;Database=Orders;Integrated Security=true;TrustServerCertificate=true";
+builder.Services.AddSingleton(new OrdersDbConnectionString(ordersDbConnection));
+
 var app = builder.Build();
 app.MapControllers();
 app.MapGet("/", () => "OrderService demo");
@@ -28,3 +34,5 @@ app.MapGet("/", () => "OrderService demo");
 app.Run();
 
 public partial class Program { }
+
+public sealed record OrdersDbConnectionString(string Value);
