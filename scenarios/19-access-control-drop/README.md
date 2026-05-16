@@ -1,6 +1,6 @@
-# 19 — Architectural Access Control Drop (Security Regression)
+# 19 - Architectural Access Control Drop (Security Regression)
 
-**Expected verdict:** 🔴 CRITICAL — GauntletCI should flag removal of `[Authorize]` attribute.
+**Expected verdict:** 🔴 CRITICAL - GauntletCI should flag removal of `[Authorize]` attribute.
 
 ## What changed
 A legacy billing controller endpoint is being refactored to use a clean `MediatR` messaging pipeline. During the conversion, the `[Authorize(Roles = "BillingAdmin")]` attribute is accidentally stripped from the `ProcessRefund` method.
@@ -21,7 +21,7 @@ Traditional tools miss this because:
 
 **GauntletCI detection:** Compares `IMethodSymbol` models between baseline and PR compilation contexts. The `ProcessRefund` method loses an `AuthorizeAttribute` sub-type with no fallback class-level or handler-level authorization mapping.
 
-**Rule:** Behavioral Change Detection (GCI0003) — Structural mutation of security-critical attributes.
+**Rule:** Behavioral Change Detection (GCI0003) - Structural mutation of security-critical attributes.
 
 ## Risk
 

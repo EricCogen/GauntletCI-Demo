@@ -1,6 +1,6 @@
-# 03 — Hardcoded API key in source
+# 03 - Hardcoded API key in source
 
-**Expected verdict:** ❌ Fails — GauntletCI should fire **GCI0012** (hardcoded secret).
+**Expected verdict:** ❌ Fails - GauntletCI should fire **GCI0012** (hardcoded secret).
 
 ## What changed
 `src/OrderService/Program.cs` adds a `PostConfigure<StripeOptions>` block
@@ -26,5 +26,5 @@ property named `ApiKey`** and flags it.
   bypass that. GauntletCI catches it first.
 
 ## What GauntletCI catches
-`GCI0012 Hardcoded secret` — credential-shaped literal assigned to an
+`GCI0012 Hardcoded secret` - credential-shaped literal assigned to an
 options property named `ApiKey`.

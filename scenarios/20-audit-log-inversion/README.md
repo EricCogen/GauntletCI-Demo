@@ -1,6 +1,6 @@
-# 20 — Failure-Path Audit Log Inversion (CFG Mutation)
+# 20 - Failure-Path Audit Log Inversion (CFG Mutation)
 
-**Expected verdict:** 🔴 HIGH — GauntletCI should flag control flow reordering where audit logging bypasses exception paths.
+**Expected verdict:** 🔴 HIGH - GauntletCI should flag control flow reordering where audit logging bypasses exception paths.
 
 ## What changed
 An order fulfillment coordinator method is being performance-optimized. The developer moves the audit logging invocation from the start of the method to the end, to minimize response delays. However, this creates a critical behavioral regression: if the core fulfillment engine throws an unhandled exception, the audit log is never recorded—breaking compliance requirements.
@@ -21,7 +21,7 @@ Traditional tools miss this because:
 
 **GauntletCI detection:** Runs `ControlFlowAnalysis` on both method bodies. Baseline shows `LogActionAsync -> ProcessAsync` edge flow. PR shows `ProcessAsync -> LogActionAsync` edge flow. This is flagged as an un-synchronized sequence regression that violates control-flow integrity.
 
-**Rule:** Behavioral Change Detection (GCI0003) — Critical execution sequence reordering.
+**Rule:** Behavioral Change Detection (GCI0003) - Critical execution sequence reordering.
 
 ## Risk
 

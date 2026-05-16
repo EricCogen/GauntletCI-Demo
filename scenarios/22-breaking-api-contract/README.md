@@ -1,6 +1,6 @@
-# 22 — Breaking Public Package Contract (No Version Bump)
+# 22 - Breaking Public Package Contract (No Version Bump)
 
-**Expected verdict:** 🔴 CRITICAL — GauntletCI should flag removal of public API parameter without major version increment.
+**Expected verdict:** 🔴 CRITICAL - GauntletCI should flag removal of public API parameter without major version increment.
 
 ## What changed
 An enterprise notification integration framework interface is being simplified. The developer removes the `CancellationToken` parameter from the public `BroadcastAsync` method. The code compiles cleanly in the local monorepo because all consumers are updated. However, this creates a breaking change for external downstream consumers who have taken a dependency on the NuGet package—their implementations implementing the old interface signature will fail at runtime when called with the new package version.
@@ -21,7 +21,7 @@ Traditional tools miss this because:
 
 **GauntletCI detection:** Extracts public API contracts via Roslyn symbol comparison. The inbound PR shows a structural contraction of `INotificationDispatcher.BroadcastAsync` parameter list. Package metadata (`.csproj` version) does not indicate a major release increment (e.g., 1.0.0 → 2.0.0), violating semantic versioning rules for public APIs.
 
-**Rule:** Breaking Changes Detection (GCI0012) — Public API structural mutation without version bump.
+**Rule:** Breaking Changes Detection (GCI0012) - Public API structural mutation without version bump.
 
 ## Risk
 

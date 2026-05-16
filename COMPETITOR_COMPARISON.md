@@ -69,7 +69,7 @@ This document compares how popular CI/CD linting and analysis tools handle the 4
 - **Why:** Snyk focuses on dependency vulnerabilities and open-source risks, not application-level authorization mutations.
 
 **GauntletCI**
-- **Finding:** ✅ **CRITICAL** — Behavioral change detected
+- **Finding:** ✅ **CRITICAL** - Behavioral change detected
 - **Method:** Compares `IMethodSymbol` models across baseline/PR Roslyn compilation units. Detects removal of `AuthorizeAttribute` sub-type with no fallback mapping.
 - **Output:** Flagged as structural security regression (GCI0003 variant: Removed security-critical attribute).
 
@@ -123,7 +123,7 @@ This document compares how popular CI/CD linting and analysis tools handle the 4
 - **Why:** Dependency and vulnerability-focused; not application-level logic.
 
 **GauntletCI**
-- **Finding:** ✅ **HIGH** — Control flow regression detected
+- **Finding:** ✅ **HIGH** - Control flow regression detected
 - **Method:** Runs `ControlFlowAnalysis` on both method bodies. Baseline CFG: `LogActionAsync → ProcessAsync`. PR CFG: `ProcessAsync → LogActionAsync`. Flagged as un-synchronized sequence mutation (GCI0003 variant: CFG reordering).
 - **Output:** Behavioral change with audit trail implications.
 
@@ -177,7 +177,7 @@ This document compares how popular CI/CD linting and analysis tools handle the 4
 - **Why:** Doesn't analyze application concurrency code.
 
 **GauntletCI**
-- **Finding:** ✅ **CRITICAL** — Unsynchronized state mutation in async context detected
+- **Finding:** ✅ **CRITICAL** - Unsynchronized state mutation in async context detected
 - **Method:** Analyzes `IIncrementExpressionOperation` targeting `IFieldSymbol` with `IsStatic = true`. Because mutation occurs inside a `Task`-returning method without `Interlocked.*` or thread-safe wrapper, race condition warning raised (GCI0003 variant: Async concurrency violation).
 - **Output:** Flagged as high-severity behavioral regression.
 
@@ -232,7 +232,7 @@ This document compares how popular CI/CD linting and analysis tools handle the 4
 - **Why:** Dependency-focused; doesn't analyze own-project public API changes.
 
 **GauntletCI**
-- **Finding:** ✅ **CRITICAL** — Binary-breaking API change without version increment detected
+- **Finding:** ✅ **CRITICAL** - Binary-breaking API change without version increment detected
 - **Method:** Extracts public API contracts via Roslyn symbol metadata. Compares `IMethodSymbol` parameter lists between baseline and PR. Detects structural contraction (parameter removal). Cross-references `.csproj` version metadata to verify major version bump. Fails if change is breaking without major bump (GCI0012 variant: Breaking API change).
 - **Output:** Flagged as critical backward compatibility violation.
 

@@ -123,7 +123,7 @@ COMPETITOR_COMPARISON.md (12KB comprehensive analysis)
 ---
 
 ## Current Branch
-`feature/add-4-scenarios` — Ready for review
+`feature/add-4-scenarios` - Ready for review
 
 ## Next Action
 Would you like me to:

@@ -13,7 +13,7 @@
 
 This repo is **not** a working application. It is a controlled demonstration
 environment whose only purpose is to let you see GauntletCI's output on
-realistic code changes — without installing anything yourself.
+realistic code changes - without installing anything yourself.
 
 It contains:
 
@@ -272,7 +272,7 @@ and compare them against GauntletCI's behavior detection.
 See [**DEMO_FINDINGS.md**](DEMO_FINDINGS.md) for the complete breakdown of what each
 tool finds (or misses) on the Tier 3 scenarios.
 
-**Quick summary:** On behavioral regressions (Tier 3 scenarios 19–22):
+**Quick summary:** On behavioral regressions (Tier 3 scenarios 19-22):
 - GauntletCI: ✅ 4/4 detected
 - CodeQL, Semgrep, SonarQube, Snyk, StyleCop: ❌ 0/4 detected each
 
@@ -375,4 +375,4 @@ GauntletCI-Demo/
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT - see [LICENSE](LICENSE).

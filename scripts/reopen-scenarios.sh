@@ -2,8 +2,8 @@
 # Rebuilds one or all demo scenario branches and reopens their PRs against main.
 #
 # Each scenarios/<id>/ directory contains:
-#   README.md            — human description + expected verdict
-#   files/<repo path>    — overlay files copied on top of the base repo
+#   README.md            - human description + expected verdict
+#   files/<repo path>    - overlay files copied on top of the base repo
 #
 # This script:
 #   1. Checks out main

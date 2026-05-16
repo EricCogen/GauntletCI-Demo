@@ -1,6 +1,6 @@
-# 12 — New public method takes a nullable string with no guard
+# 12 - New public method takes a nullable string with no guard
 
-**Expected verdict:** ❌ Fails — GauntletCI should fire **GCI0006** (edge case handling).
+**Expected verdict:** ❌ Fails - GauntletCI should fire **GCI0006** (edge case handling).
 
 ## What changed
 A new `CustomerNoteFormatter` exposes a public method that accepts a
@@ -18,7 +18,7 @@ public sealed class CustomerNoteFormatter
 ```
 
 The compiler is silenced with `!` (so the build still succeeds), but
-the runtime behaviour is unchanged — calling `Format(null)` throws
+the runtime behaviour is unchanged - calling `Format(null)` throws
 `NullReferenceException` deep inside `Trim`.
 
 ## Why this is risky
@@ -32,7 +32,7 @@ the runtime behaviour is unchanged — calling `Format(null)` throws
   fallback) makes the contract explicit.
 
 ## What GauntletCI catches
-`GCI0006 Edge Case Handling` — a public method whose signature
+`GCI0006 Edge Case Handling` - a public method whose signature
 declares a nullable reference parameter (`string?` / `object?`) and
 whose first few lines contain no `null` check, `throw`, or
 `ArgumentNullException` guard.

@@ -1,6 +1,6 @@
-# 17 — Singleton background service captures a scoped dependency
+# 17 - Singleton background service captures a scoped dependency
 
-**Expected verdict:** ❌ Fails — GauntletCI should fire **GCI0038** (Dependency Injection Safety — captive dependency).
+**Expected verdict:** ❌ Fails - GauntletCI should fire **GCI0038** (Dependency Injection Safety - captive dependency).
 
 ## What changed
 A new `OrderReminderBackgroundService` is registered as a **singleton**
@@ -30,7 +30,7 @@ public OrderReminderBackgroundService(IOrderEventEmitter emitter)
 ## Why this is risky
 - A singleton resolves its dependencies **once**, at the moment the
   container builds it. A scoped service injected directly into a
-  singleton becomes a **captive dependency** — the singleton holds the
+  singleton becomes a **captive dependency** - the singleton holds the
   same scoped instance forever, across every request and every scope.
 - For `IOrderEventEmitter`, this means a per-request correlation id is
   frozen on first use and reused for every subsequent event — silently
@@ -41,7 +41,7 @@ public OrderReminderBackgroundService(IOrderEventEmitter emitter)
   trace id."
 
 ## What GauntletCI catches
-`GCI0038 Dependency Injection Safety` — the diff registers both an
+`GCI0038 Dependency Injection Safety` - the diff registers both an
 `AddSingleton<…>` and an `AddScoped<…>` lifetime in the same file
 (`Program.cs`), the canonical shape of a captive-dependency wiring
 mistake.

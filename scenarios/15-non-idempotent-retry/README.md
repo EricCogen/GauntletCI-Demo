@@ -1,6 +1,6 @@
-# 15 — Retry endpoint POSTed without an idempotency key
+# 15 - Retry endpoint POSTed without an idempotency key
 
-**Expected verdict:** ❌ Fails — GauntletCI should fire **GCI0022** (idempotency & retry safety).
+**Expected verdict:** ❌ Fails - GauntletCI should fire **GCI0022** (idempotency & retry safety).
 
 ## What changed
 `PaymentsController` gains a new `Retry` action exposed as
@@ -34,7 +34,7 @@ and "twice" on a charge endpoint means a duplicate charge.
   request, and short-circuit on a cache hit.
 
 ## What GauntletCI catches
-`GCI0022 Idempotency & Retry Safety` — a `[HttpPost(...)]` endpoint
+`GCI0022 Idempotency & Retry Safety` - a `[HttpPost(...)]` endpoint
 added to the diff with no `IdempotencyKey` / `Idempotency-Key` /
 `RequestId` / `MessageId` / `dedup` signal anywhere in the surrounding
 window.

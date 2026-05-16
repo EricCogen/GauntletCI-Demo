@@ -1,6 +1,6 @@
-# 21 — Unsynchronized Static State Mutation in Async Flow (Concurrency Regression)
+# 21 - Unsynchronized Static State Mutation in Async Flow (Concurrency Regression)
 
-**Expected verdict:** 🔴 CRITICAL — GauntletCI should flag unsynchronized static field mutation inside async method.
+**Expected verdict:** 🔴 CRITICAL - GauntletCI should flag unsynchronized static field mutation inside async method.
 
 ## What changed
 A telemetry counter is being added to track shipment processing. The developer introduces a static field `_globalShipmentCount` and increments it at the start of the `HandleAsync` method. The code compiles perfectly and single-threaded tests pass. However, under multi-threaded asynchronous load, the counter experiences lost increments due to race conditions.
@@ -23,7 +23,7 @@ Traditional tools miss this because:
 
 **GauntletCI detection:** Analyzes `IIncrementExpressionOperation` targeting an `IFieldSymbol` with `IsStatic = true`. Because the operation resides inside a method returning `Task` without a corresponding `Interlocked.Increment` or thread-safe wrapper, a race condition warning is raised.
 
-**Rule:** Behavioral Change Detection (GCI0003) — Unsafe concurrency pattern introduced.
+**Rule:** Behavioral Change Detection (GCI0003) - Unsafe concurrency pattern introduced.
 
 ## Risk
 

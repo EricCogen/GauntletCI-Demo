@@ -1,16 +1,16 @@
-# 18 — Dependabot PR slips a public API change in next to a package bump
+# 18 - Dependabot PR slips a public API change in next to a package bump
 
-**Expected verdict:** ❌ Fails — GauntletCI should fire **GCI0052** (Dependency Bot API Drift).
+**Expected verdict:** ❌ Fails - GauntletCI should fire **GCI0052** (Dependency Bot API Drift).
 
 ## What changed
-This PR is shaped like a routine **Dependabot** update — bumps a
+This PR is shaped like a routine **Dependabot** update - bumps a
 package version in `OrderService.csproj` — but quietly **also** changes
 a public method in `PricingService.cs`:
 
-- `src/OrderService/OrderService.csproj` — adds a new
+- `src/OrderService/OrderService.csproj` - adds a new
   `<PackageReference>` for `Polly` (the "lockfile-equivalent" change a
   bot would author).
-- `src/OrderService/Pricing/PricingService.cs` — adds a new public
+- `src/OrderService/Pricing/PricingService.cs` - adds a new public
   method `ApplyShipping`, expanding the public surface of the
   `PricingService`.
 
@@ -18,7 +18,7 @@ a public method in `PricingService.cs`:
 - Dependency-bot PRs get **rubber-stamped** by reviewers far more often
   than human-authored PRs because they're expected to be mechanical
   package bumps.
-- A bot account that has been compromised — or a misconfigured bot
+- A bot account that has been compromised - or a misconfigured bot
   template — can use that low-scrutiny channel to slip in production
   code changes that would normally require deeper review.
 - Even when benign, an API surface change wedged into a "chore: bump

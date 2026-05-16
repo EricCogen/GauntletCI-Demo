@@ -21,7 +21,7 @@ builder.Services.Configure<StripeOptions>(builder.Configuration.GetSection("Stri
 builder.Services.AddSingleton<IPaymentClient, PaymentClient>();
 builder.Services.AddScoped<OrderProcessor>();
 
-// Order-database connection — temporarily inlined while the
+// Order-database connection - temporarily inlined while the
 // secret-store wiring is being moved out of the legacy host.
 const string ordersDbConnection =
     "Server=tcp:orders-db.internal;Database=Orders;Integrated Security=true;TrustServerCertificate=true";
