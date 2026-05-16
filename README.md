@@ -51,6 +51,42 @@ It contains:
 
 ---
 
+## Want to See GauntletCI's Competitive Advantage?
+
+**Switch to the [`feature/add-4-scenarios`](https://github.com/EricCogen/GauntletCI-Demo/tree/feature/add-4-scenarios) branch** for the live competitive analysis.
+
+### The Headline
+
+On 4 behavioral regression scenarios (Tier 3), here's what each tool finds:
+
+| Tool | Scenario 19 | Scenario 20 | Scenario 21 | Scenario 22 | **Total** |
+|------|-------------|-------------|-------------|-------------|-----------|
+| **GauntletCI** | ✅ | ✅ | ✅ | ✅ | **4/4** |
+| CodeQL | ❌ | ❌ | ❌ | ❌ | 0/4 |
+| Semgrep | ❌ | ❌ | ❌ | ❌ | 0/4 |
+| SonarQube | ❌ | ❌ | ⚠️ | ❌ | 0/4 |
+| StyleCop | ❌ | ❌ | ❌ | ❌ | 0/4 |
+| Snyk | ❌ | ❌ | ❌ | ❌ | 0/4 |
+
+Each scenario is a **realistic production bug** that:
+- Compiles successfully
+- Passes unit tests
+- Is invisible to traditional analysis tools
+- Breaks systems in production
+
+**GauntletCI catches all 4. Other tools catch none.**
+
+### See It Live
+
+On the `feature/add-4-scenarios` branch, all tools run live via GitHub Actions:
+- **DEMO_FINDINGS.md** - Detailed tool-by-tool comparison
+- **Live PRs** - Each scenario runs CodeQL, Semgrep, SonarQube, StyleCop, Snyk, and GauntletCI
+- **The Verdict** - See the 4/4 vs 0/4 scorecard in action
+
+👉 **[Browse the feature branch](https://github.com/EricCogen/GauntletCI-Demo/tree/feature/add-4-scenarios)**
+
+---
+
 ## How to use this repository
 
 > **Why we recommend running it yourself.** This repo's canonical PRs are
