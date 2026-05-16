@@ -1,30 +1,38 @@
-# Demo Findings Comparison: GauntletCI vs Competitors
+# Demo Findings Comparison: GauntletCI's Diff-Based Detection vs Whole-Project SAST Tools
 
-## Executive Summary: The Numbers
+## Understanding the Comparison
 
-| Tool | S19 | S20 | S21 | S22 | **Score** |
-|------|-----|-----|-----|-----|-----------|
-| **GauntletCI** | ✅ | ✅ | ✅ | ✅ | **4/4 (100%)** |
-| CodeQL | ❌ | ❌ | ❌ | ❌ | 0/4 (0%) |
-| Semgrep | ❌ | ❌ | ❌ | ❌ | 0/4 (0%) |
-| SonarQube | ❌ | ❌ | ⚠️ | ❌ | 0/4 (0%) |
-| StyleCop | ❌ | ❌ | ❌ | ❌ | 0/4 (0%) |
-| Snyk | ❌ | ❌ | ❌ | ❌ | 0/4 (0%) |
+This document compares how different analysis tools approach the same code scenarios:
 
-**The Bottom Line:** On behavioral regressions that compile cleanly and pass tests, GauntletCI catches all of them. The other tools catch none.
+- **SAST Tools** (CodeQL, Semgrep, SonarQube, Snyk, StyleCop) scan the entire codebase during CI, looking for known vulnerability signatures and code quality patterns. They excel at finding explicit anti-patterns like hardcoded secrets or standard `.Result` deadlocks.
 
----
+- **GauntletCI** analyzes the git diff during pre-commit, focusing on behavioral deltas: structural mutations, execution sequence changes, and boundary drifts that only become visible when comparing the specific change against its baseline.
+
+Both approaches are valid. The difference is what they can see:
+- SAST catches known vulnerability signatures across the codebase
+- GauntletCI catches behavioral regressions in the specific change that compile cleanly, pass tests, but break production
+
+## The Scenarios: What They Show
+
+| Scenario | Risk Category | What It Demonstrates |
+|----------|-------------|-----|
+| **S19** | Architectural Access Control | Removal of boundary enforcement decorator within a diff - not a "vulnerability signature" SAST looks for, but a structural boundary drop that only diff analysis detects |
+| **S20** | Execution Sequence | Reordering of state mutations - syntactically clean C# that SAST linters pass, but sequence-dependent execution |
+| **S21** | Async Concurrency | Propagation loss in the changed method boundaries - not a standard `.Result` pattern SAST rules look for, but context loss in the diff |
+| **S22** | API Contracts | Method signature drift in the change - compiles after recompilation, passes tests, but callers see different contracts |
 
 ## Quick Reference: Tools & Findings
 
-| Scenario | SonarQube | CodeQL | Semgrep | StyleCop | Snyk | GauntletCI |
-|----------|-----------|--------|---------|----------|------|-----------|
-| **S19: Access Control Drop** | ❌ 0 findings | ❌ 0 findings | ❌ 0 findings | ❌ 0 findings | ❌ 0 findings | ✅ CRITICAL |
-| **S20: Audit Log Inversion** | ❌ 0 findings | ❌ 0 findings | ❌ 0 findings | ❌ 0 findings | ❌ 0 findings | ✅ HIGH |
-| **S21: Static Mutation** | ⚠️ 0-1 warnings | ❌ 0 findings | ❌ 0 findings | ❌ 0 findings | ❌ 0 findings | ✅ CRITICAL |
-| **S22: Breaking API** | ❌ 0 findings | ❌ 0 findings | ❌ 0 findings | ❌ 0 findings | ❌ 0 findings | ✅ CRITICAL |
+| Scenario | SAST Catch? | GauntletCI? | Why SAST Can't See It |
+|----------|---------|-----------|-----|
+| **S19: Access Control Drop** | ❌ No | ✅ Yes | SAST doesn't track removed attributes across diffs; authorization enforcement is not a "vulnerability signature" |
+| **S20: Audit Log Inversion** | ❌ No | ✅ Yes | SAST doesn't track execution order changes; both statements are idiomatic C# that passes style rules |
+| **S21: Async Propagation Loss** | ❌ No | ✅ Yes | SAST has rules for `.Result`, but not for CancellationToken propagation loss within method boundaries in a diff |
+| **S22: Breaking API Contract** | ❌ No | ✅ Yes | SAST doesn't compare method signatures across diffs; compiles and passes type checking after recompilation |
 
 ---
+
+## Detailed Scenario Analysis
 
 ## Scenario 19: Architectural Access Control Drop
 
@@ -50,7 +58,6 @@ No issues detected
 - No security vulnerabilities
 - No violations
 ```
-**Why:** SonarQube analyzes code in isolation. It doesn't compare baseline vs PR to detect removed attributes. Attribute removal is not a "code smell" in SonarQube's ruleset.
 
 #### CodeQL
 **Status:** ❌ NO FINDINGS
@@ -59,7 +66,6 @@ No data flows detected
 - No taint propagation issues
 - No type safety violations
 ```
-**Why:** CodeQL specializes in taint tracking and data flow. It doesn't track AST-level structural changes across diffs like attribute removal.
 
 #### Semgrep
 **Status:** ❌ NO FINDINGS
@@ -68,14 +74,12 @@ No patterns matched
 - 0 security patterns
 - 0 OWASP violations
 ```
-**Why:** Semgrep is pattern-based. It doesn't have a built-in rule to detect missing `[Authorize]` attributes. User would need to write custom rule.
 
 #### StyleCop
 **Status:** ❌ NO FINDINGS
 ```
 No style violations detected
 ```
-**Why:** StyleCop enforces naming conventions and style rules. Authorization enforcement is not in its scope.
 
 #### Snyk
 **Status:** ❌ NO FINDINGS
@@ -84,7 +88,16 @@ No vulnerabilities detected
 - No dependency issues
 - No open-source risks
 ```
-**Why:** Snyk focuses on dependency vulnerabilities, not application-level security regressions.
+
+#### Why Traditional Tools Miss This
+
+All five tools analyze code snapshots or scan for known vulnerability signatures. They do NOT:
+
+1. **Compare baseline to PR diff** - These tools don't have the concept of "what was removed in this change." They see the current state of the code.
+2. **Track authorization boundaries** - Authorization is an application-level concern implemented via custom attributes. SAST tools find hardcoded credentials or taint flows, but not authorization decorator removal.
+3. **Have AST-level structural change rules** - No SAST tool has a rule: "flag if [Authorize] attribute was removed from a public endpoint."
+
+This is a *structural boundary drop detectable only in the diff*. To catch it, you must ask: "Did this change remove access control that existed before?" That's a question that requires comparing baseline vs feature branch—something whole-project snapshot analysis cannot efficiently do during CI.
 
 #### GauntletCI ✅ **CATCHES THIS**
 **Status:** ✅ CRITICAL FINDING

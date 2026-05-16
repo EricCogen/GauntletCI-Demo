@@ -51,27 +51,41 @@ It contains:
 
 ---
 
-## Want to See GauntletCI's Competitive Advantage?
+## Understanding GauntletCI's Value Proposition
 
-**18 behavioral regression scenarios** across 6 risk domains. Here's what each tool detects:
+GauntletCI detects **behavioral change risks** within your git diff during pre-commit analysis. This is fundamentally different from whole-project snapshot SAST tools.
 
-| Category | Scenarios | GauntletCI | CodeQL | Semgrep | SonarQube | StyleCop | Snyk |
-|----------|-----------|-----------|--------|---------|----------|----------|------|
-| **Security & Access Control** | S19, S23, S24 | ✅ 3/3 | ❌ 0/3 | ❌ 0/3 | ❌ 0/3 | ❌ 0/3 | ❌ 0/3 |
-| **Concurrency & Async** | S21, S25-S27 | ✅ 4/4 | ❌ 0/4 | ❌ 0/4 | ❌ 0/4 | ❌ 0/4 | ❌ 0/4 |
-| **Data Integrity & Logic** | S20, S28-S30 | ✅ 4/4 | ❌ 0/4 | ❌ 0/4 | ❌ 0/4 | ❌ 0/4 | ❌ 0/4 |
-| **API Contracts & Versioning** | S22, S31-S32 | ✅ 3/3 | ❌ 0/3 | ❌ 0/3 | ❌ 0/3 | ❌ 0/3 | ❌ 0/3 |
-| **Performance & Resources** | S33-S34 | ✅ 2/2 | ❌ 0/2 | ❌ 0/2 | ❌ 0/2 | ❌ 0/2 | ❌ 0/2 |
-| **Dependency Injection** | S35-S36 | ✅ 2/2 | ❌ 0/2 | ❌ 0/2 | ❌ 0/2 | ❌ 0/2 | ❌ 0/2 |
-| **TOTAL** | **18** | **18/18** | **0/18** | **0/18** | **0/18** | **0/18** | **0/18** |
+### What This Means
 
-Each scenario is a **realistic production bug** that:
-- Compiles successfully
-- Passes unit tests
-- Is invisible to traditional analysis tools
-- Breaks systems in production
+**SAST Tools (CodeQL, Semgrep, SonarQube, etc.):**
+- Scan the entire codebase during CI (multi-minute process)
+- Look for known vulnerability signatures and code quality patterns
+- Excellent at finding hardcoded secrets, SQL injection patterns, standard anti-patterns like `.Result` deadlocks
+- Run during compilation/packaging phase as CI gates
 
-**GauntletCI catches all 18. Other tools catch none.**
+**GauntletCI:**
+- Analyzes only the git diff during pre-commit (sub-second)
+- Detects structural mutations, execution sequence changes, boundary drifts within the specific change delta
+- Catches behavioral regressions that compile cleanly, pass all tests, but break production systems
+- Runs before you commit, before code review, before CI
+
+### The 18 Scenarios: What They Demonstrate
+
+These 18 behavioral scenarios show what GauntletCI detects that whole-project snapshot tools cannot see:
+
+| Category | Scenarios | What It Shows |
+|----------|-----------|--------|
+| **Architectural Access Control** | S19, S23, S24 | Removal/modification of access boundaries in the diff without corresponding validation changes |
+| **Execution Sequence Changes** | S20, S28-S30 | State mutations or external calls reordered in ways that are syntactically clean but execution-order dependent |
+| **Async Propagation Drops** | S21, S25-S27 | Loss of CancellationToken context, fire-and-forget task patterns, propagation failures across method boundaries in the diff |
+| **Public Contract Drift** | S22, S31-S32 | Method signature, default parameter, or API contract changes that compile but break callers in the specific change |
+| **Performance & Resource** | S33-S34 | Configuration changes, pooling disablement, cache lookup removal that are invisible to style checkers |
+| **Dependency Injection Scope** | S35-S36 | Scope boundary mismatches in DI configuration within the specific change |
+
+Each scenario:
+- Compiles successfully and passes unit tests
+- Would pass both SAST and linting gates
+- Introduces behavioral risk that only diff-level analysis can catch before production
 
 ### See It Live
 
