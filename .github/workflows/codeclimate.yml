@@ -1,0 +1,49 @@
+name: Code Climate Analysis
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  code-climate:
+    name: Code Climate Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Run Code Climate (via docker)
+      env:
+        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+      run: |
+        docker run --interactive --rm \
+          --env CC_TEST_REPORTER_ID \
+          --volume "$(pwd)":/code \
+          --workdir /code \
+          codeclimate/codeclimate:latest \
+          analyze \
+          --format json > codeclimate-report.json || true
+      continue-on-error: true
+
+    - name: Upload Code Climate Report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: codeclimate-report
+        path: codeclimate-report.json
+      continue-on-error: true
