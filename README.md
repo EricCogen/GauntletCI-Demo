@@ -78,6 +78,21 @@ Each is a realistic production bug that:
 
 ---
 
+## How to Verify This Yourself
+
+**Fastest way:** Fork this repo, enable Actions, run workflow `Reopen demo scenarios`
+
+All analysis tools run live on every PR via GitHub Actions in `.github/workflows/`:
+- `codeql.yml` - runs CodeQL on every PR
+- `semgrep.yml` - runs Semgrep on every PR
+- `stylecop.yml` - runs StyleCop enforcement on every PR
+- `snyk.yml` - runs Snyk on every PR
+- `gauntletci.yml` - runs GauntletCI on every PR
+
+You'll see the findings (or lack thereof) in real time. No downloads, no local setup required—just fork, enable workflows, and watch the PRs.
+
+---
+
 ## How to use this repository
 
 > **Why we recommend running it yourself.** This repo's canonical PRs are
