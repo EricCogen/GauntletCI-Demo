@@ -1,0 +1,46 @@
+name: GauntletCI Behavioral Analysis
+
+on:
+  push:
+    branches: [ main, feature/add-4-scenarios ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  gauntletci:
+    name: GauntletCI
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install GauntletCI
+      run: |
+        dotnet tool install --global gauntletci
+
+    - name: Run GauntletCI
+      id: gauntletci
+      run: |
+        gauntletci --version
+        # For PR: compare against main
+        if [ "${{ github.event_name }}" == "pull_request" ]; then
+          gauntletci analyze --format=json --output=gauntletci-report.json --diff origin/main..HEAD || true
+        else
+          gauntletci analyze --format=json --output=gauntletci-report.json || true
+        fi
+
+    - name: Display GauntletCI Report
+      run: |
+        if [ -f gauntletci-report.json ]; then
+          echo "### GauntletCI Analysis Report" >> $GITHUB_STEP_SUMMARY
+          cat gauntletci-report.json | jq '.' >> $GITHUB_STEP_SUMMARY
+        fi
+
+    - name: Upload GauntletCI Report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: gauntletci-report
+        path: gauntletci-report.json
