@@ -57,16 +57,17 @@ It contains:
 
 ### The Headline
 
-On 4 behavioral regression scenarios (Tier 3), here's what each tool finds:
+**18 behavioral regression scenarios** across 6 risk domains. Here's what each tool detects:
 
-| Tool | Scenario 19 | Scenario 20 | Scenario 21 | Scenario 22 | **Total** |
-|------|-------------|-------------|-------------|-------------|-----------|
-| **GauntletCI** | ✅ | ✅ | ✅ | ✅ | **4/4** |
-| CodeQL | ❌ | ❌ | ❌ | ❌ | 0/4 |
-| Semgrep | ❌ | ❌ | ❌ | ❌ | 0/4 |
-| SonarQube | ❌ | ❌ | ⚠️ | ❌ | 0/4 |
-| StyleCop | ❌ | ❌ | ❌ | ❌ | 0/4 |
-| Snyk | ❌ | ❌ | ❌ | ❌ | 0/4 |
+| Category | Scenarios | GauntletCI | CodeQL | Semgrep | SonarQube | StyleCop | Snyk |
+|----------|-----------|-----------|--------|---------|----------|----------|------|
+| **Security & Access Control** | S19, S23, S24 | ✅ 3/3 | ❌ 0/3 | ❌ 0/3 | ❌ 0/3 | ❌ 0/3 | ❌ 0/3 |
+| **Concurrency & Async** | S21, S25-S27 | ✅ 4/4 | ❌ 0/4 | ❌ 0/4 | ❌ 0/4 | ❌ 0/4 | ❌ 0/4 |
+| **Data Integrity & Logic** | S20, S28-S30 | ✅ 4/4 | ❌ 0/4 | ❌ 0/4 | ❌ 0/4 | ❌ 0/4 | ❌ 0/4 |
+| **API Contracts & Versioning** | S22, S31-S32 | ✅ 3/3 | ❌ 0/3 | ❌ 0/3 | ❌ 0/3 | ❌ 0/3 | ❌ 0/3 |
+| **Performance & Resources** | S33-S34 | ✅ 2/2 | ❌ 0/2 | ❌ 0/2 | ❌ 0/2 | ❌ 0/2 | ❌ 0/2 |
+| **Dependency Injection** | S35-S36 | ✅ 2/2 | ❌ 0/2 | ❌ 0/2 | ❌ 0/2 | ❌ 0/2 | ❌ 0/2 |
+| **TOTAL** | **18** | **18/18** | **0/18** | **0/18** | **0/18** | **0/18** | **0/18** |
 
 Each scenario is a **realistic production bug** that:
 - Compiles successfully
@@ -74,14 +75,15 @@ Each scenario is a **realistic production bug** that:
 - Is invisible to traditional analysis tools
 - Breaks systems in production
 
-**GauntletCI catches all 4. Other tools catch none.**
+**GauntletCI catches all 18. Other tools catch none.**
 
 ### See It Live
 
 On the `feature/add-4-scenarios` branch, all tools run live via GitHub Actions:
-- **DEMO_FINDINGS.md** - Detailed tool-by-tool comparison
+- **DEMO_FINDINGS.md** - Detailed tool-by-tool comparison across all 18 scenarios
 - **Live PRs** - Each scenario runs CodeQL, Semgrep, SonarQube, StyleCop, Snyk, and GauntletCI
-- **The Verdict** - See the 4/4 vs 0/4 scorecard in action
+- **The Verdict** - See the 18/18 vs 0/18 scorecard in action
+- **36 Total Scenarios** - Tier 1 (6), Tier 2 (12), Tier 3 (18)
 
 👉 **[Browse the feature branch](https://github.com/EricCogen/GauntletCI-Demo/tree/feature/add-4-scenarios)**
 
