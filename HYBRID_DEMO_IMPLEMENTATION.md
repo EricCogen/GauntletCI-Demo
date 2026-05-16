@@ -66,9 +66,9 @@ scenarios/22-breaking-api-contract/files/src/.../INotificationDispatcher.Regress
 
 ### Documentation
 
-- **DEMO_FINDINGS.md** — Comprehensive tool comparison with findings for each scenario
-- **COMPETITOR_COMPARISON.md** — Technical analysis of competing tools
-- **PHASE_1_SUMMARY.md** — Overview of completed Phase 1 work
+- **DEMO_FINDINGS.md** - Comprehensive tool comparison with findings for each scenario
+- **COMPETITOR_COMPARISON.md** - Technical analysis of competing tools
+- **PHASE_1_SUMMARY.md** - Overview of completed Phase 1 work
 
 ---
 
@@ -104,10 +104,10 @@ Then open PR on GitHub. All workflows will run and show findings.
 
 ### Review Findings
 
-1. **GitHub Security tab** — CodeQL and Semgrep findings
-2. **Workflow logs** — See what each tool ran
-3. **DEMO_FINDINGS.md** — Comparison of what each tool found/missed
-4. **Artifacts** — Download GauntletCI JSON reports
+1. **GitHub Security tab** - CodeQL and Semgrep findings
+2. **Workflow logs** - See what each tool ran
+3. **DEMO_FINDINGS.md** - Comparison of what each tool found/missed
+4. **Artifacts** - Download GauntletCI JSON reports
 
 ---
 
@@ -127,16 +127,16 @@ Then open PR on GitHub. All workflows will run and show findings.
 ## Competitive Tools Included
 
 ### Free Tools (Run in CI/CD)
-✅ CodeQL — GitHub native, taint tracking
-✅ Semgrep — Pattern-based analysis
-✅ StyleCop — .NET style enforcement
-✅ Snyk — Dependency vulnerabilities
-✅ GauntletCI — Behavioral regression detection
+✅ CodeQL - GitHub native, taint tracking
+✅ Semgrep - Pattern-based analysis
+✅ StyleCop - .NET style enforcement
+✅ Snyk - Dependency vulnerabilities
+✅ GauntletCI - Behavioral regression detection
 
 ### Paid Tools (Documented Expected Results)
-📄 SonarQube — Code quality metrics
-📄 NDepend — Binary analysis
-📄 Code Climate — Cloud-based analysis
+📄 SonarQube - Code quality metrics
+📄 NDepend - Binary analysis
+📄 Code Climate - Cloud-based analysis
 
 ---
 

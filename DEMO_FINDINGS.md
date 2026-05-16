@@ -408,11 +408,11 @@ Each tool specializes in different aspects of code quality. GauntletCI fills the
 
 ### GitHub Actions Workflows
 All workflows are in `.github/workflows/`:
-- `codeql.yml` — CodeQL analysis
-- `semgrep.yml` — Semgrep scanning
-- `stylecop.yml` — StyleCop enforcement
-- `snyk.yml` — Snyk security scan
-- `gauntletci.yml` — GauntletCI behavioral analysis
+- `codeql.yml` - CodeQL analysis
+- `semgrep.yml` - Semgrep scanning
+- `stylecop.yml` - StyleCop enforcement
+- `snyk.yml` - Snyk security scan
+- `gauntletci.yml` - GauntletCI behavioral analysis
 
 ### Local Testing
 ```bash
