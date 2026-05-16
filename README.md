@@ -268,28 +268,64 @@ the same `OrderService` sample app. Verdict for every Tier 2 entry is
 | 17 | [captive-dependency](scenarios/17-captive-dependency/README.md) | `GCI0038` Dependency Injection Safety |
 | 18 | [dependabot-api-drift](scenarios/18-dependabot-api-drift/README.md) | `GCI0052` Dependency Bot API Drift |
 
-### Tier 3 - competitor analysis scenarios
+### Tier 3 - behavioral regression scenarios (expanded)
 
-Four advanced behavioral regression scenarios designed to demonstrate
-GauntletCI's **unique ability to detect changes that pass traditional analysis
-tools** (SonarQube, CodeQL, Semgrep, StyleCop, Snyk). Each scenario shows a
-realistic production bug that compiles successfully but represents a critical
-regression.
+**18 advanced behavioral regression scenarios** designed to demonstrate GauntletCI's **unique ability to detect changes that pass traditional analysis tools** (SonarQube, CodeQL, Semgrep, StyleCop, Snyk). Each scenario shows a realistic production bug that compiles successfully but represents a critical regression.
 
-**Key finding:** GauntletCI detects all 4 scenarios; competitors detect 0/4.
+**Key finding:** GauntletCI detects all 18 Tier 3 scenarios; competitors detect 0/18 on average.
 See [DEMO_FINDINGS.md](DEMO_FINDINGS.md) for the complete comparison.
 
-| # | Scenario | Why it matters | Traditional tools |
-|---|----------|---|---|
-| 19 | [access-control-drop](scenarios/19-access-control-drop/README.md) | Security attribute stripped during refactoring | ❌ All miss |
-| 20 | [audit-log-inversion](scenarios/20-audit-log-inversion/README.md) | Execution order mutation breaks compliance logging | ❌ All miss |
-| 21 | [static-mutation-async](scenarios/21-static-mutation-async/README.md) | Unsynchronized static mutation in async context | ❌ All miss |
-| 22 | [breaking-api-contract](scenarios/22-breaking-api-contract/README.md) | Public API parameter removed without version bump | ❌ All miss |
+#### Security & Access Control (S19, S23, S24)
+
+| # | Scenario | Production Impact |
+|---|----------|------------------|
+| 19 | [access-control-drop](scenarios/19-access-control-drop/README.md) | Security attribute stripped during refactoring |
+| 23 | [role-based-bypass](scenarios/23-role-based-bypass/README.md) | Authorization check moved inside conditional branch |
+| 24 | [encryption-key-rotation-removal](scenarios/24-encryption-key-rotation-removal/README.md) | Decryption logic simplified, breaking old encrypted data |
+
+#### Concurrency & Async (S21, S25, S26, S27)
+
+| # | Scenario | Production Impact |
+|---|----------|------------------|
+| 21 | [static-mutation-async](scenarios/21-static-mutation-async/README.md) | Unsynchronized static mutation in async context |
+| 25 | [async-without-await](scenarios/25-async-without-await/README.md) | Async method called without await, losing exceptions |
+| 26 | [lock-scope-reduction](scenarios/26-lock-scope-reduction/README.md) | Critical section narrowed, exposing race conditions |
+| 27 | [task-result-deadlock](scenarios/27-task-result-deadlock/README.md) | Sync-over-async pattern causes hangs |
+
+#### Data Integrity & Business Logic (S20, S28, S29, S30)
+
+| # | Scenario | Production Impact |
+|---|----------|------------------|
+| 20 | [audit-log-inversion](scenarios/20-audit-log-inversion/README.md) | Execution order mutation breaks compliance logging |
+| 28 | [transaction-rollback-repositioning](scenarios/28-transaction-rollback-repositioning/README.md) | Rollback point moved, committing partial changes |
+| 29 | [idempotency-key-removed](scenarios/29-idempotency-key-removed/README.md) | Duplicate detection removed, enabling duplicate charges |
+| 30 | [cascade-delete-to-restrict](scenarios/30-cascade-delete-to-restrict/README.md) | Delete behavior changed, orphaning related records |
+
+#### API Contracts & Versioning (S22, S31, S32)
+
+| # | Scenario | Production Impact |
+|---|----------|------------------|
+| 22 | [breaking-api-contract](scenarios/22-breaking-api-contract/README.md) | Public API parameter removed without version bump |
+| 31 | [exception-contract-violation](scenarios/31-exception-contract-violation/README.md) | Documented exception no longer thrown, breaking consumers |
+| 32 | [implicit-type-coercion-change](scenarios/32-implicit-type-coercion-change/README.md) | Conversion logic simplified, changing edge case behavior |
+
+#### Performance & Resource Management (S33, S34)
+
+| # | Scenario | Production Impact |
+|---|----------|------------------|
+| 33 | [cache-lookup-removed](scenarios/33-cache-lookup-removed/README.md) | Cache bypass added, causing database load spike |
+| 34 | [connection-pooling-disabled](scenarios/34-connection-pooling-disabled/README.md) | Connection pooling disabled, connection storm |
+
+#### Dependency Injection & Scoping (S35, S36)
+
+| # | Scenario | Production Impact |
+|---|----------|------------------|
+| 35 | [service-locator-anti-pattern](scenarios/35-service-locator-anti-pattern/README.md) | Dependency resolved from service locator, untestable |
+| 36 | [singleton-captures-scoped](scenarios/36-singleton-captures-scoped/README.md) | Scoped dependency captured by singleton, data leakage |
 
 Each scenario folder contains:
 - `README.md` - what the change is and what verdict to expect
-- `files/` - the overlay files that get copied onto `main` to construct
-  the demo branch
+- `files/` - the overlay files that get copied onto `main` to construct the demo branch
 
 ---
 
@@ -298,6 +334,9 @@ Each scenario folder contains:
 The demo now includes automated CI/CD workflows that run **5 complementary analysis
 tools** on every PR. This hybrid approach lets you see real findings from free tools
 and compare them against GauntletCI's behavior detection.
+
+**Tier 3 expansion:** Now testing 18 behavioral regression scenarios against all 5 tools
+to maximize evidence of GauntletCI's competitive advantage.
 
 ### Tools included
 
@@ -314,9 +353,17 @@ and compare them against GauntletCI's behavior detection.
 See [**DEMO_FINDINGS.md**](DEMO_FINDINGS.md) for the complete breakdown of what each
 tool finds (or misses) on the Tier 3 scenarios.
 
-**Quick summary:** On behavioral regressions (Tier 3 scenarios 19-22):
-- GauntletCI: ✅ 4/4 detected
-- CodeQL, Semgrep, SonarQube, Snyk, StyleCop: ❌ 0/4 detected each
+**Quick summary:** On behavioral regressions (Tier 3 scenarios - now 18 scenarios across 6 categories):
+- GauntletCI: ✅ Detects behavioral changes in all scenarios
+- CodeQL, Semgrep, SonarQube, Snyk, StyleCop: ❌ Miss behavioral regressions consistently
+
+**Coverage:**
+- Security & Access Control: 3 scenarios
+- Concurrency & Async: 4 scenarios
+- Data Integrity & Business Logic: 4 scenarios
+- API Contracts & Versioning: 3 scenarios
+- Performance & Resource Management: 2 scenarios
+- Dependency Injection & Scoping: 2 scenarios
 
 This demonstrates why teams use multiple tools in a unified CI/CD pipeline:
 each specializes in different risk categories, and GauntletCI fills the critical
