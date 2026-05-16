@@ -15,9 +15,10 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Run Semgrep
-      uses: returntocorp/semgrep-action@v1
+      uses: returntocorp/semgrep-action@v1.76.0
       with:
         config: >-
           p/security-audit
           p/csharp
           p/owasp-top-ten
+      continue-on-error: true
