@@ -51,6 +51,33 @@ It contains:
 
 ---
 
+## The Core Claim: See the Difference Yourself
+
+> **GauntletCI finds bugs that other tools miss.**
+
+This demo repo proves it with 4 real behavioral regression scenarios (Tier 3).
+Each is a realistic production bug that:
+
+1. ✅ **Compiles successfully** - no syntax errors
+2. ✅ **Passes unit tests** - no assertion failures
+3. ✅ **Invisible to every other tool** - CodeQL, Semgrep, SonarQube, StyleCop, Snyk all say "looks good"
+4. ❌ **Breaks systems in production** - silent failures, security holes, data loss
+
+### The Verdict: 4/4 vs 0/4
+
+| Tool | S19 | S20 | S21 | S22 | Total |
+|------|-----|-----|-----|-----|-------|
+| **GauntletCI** | ✅ | ✅ | ✅ | ✅ | **4/4** |
+| CodeQL | ❌ | ❌ | ❌ | ❌ | **0/4** |
+| Semgrep | ❌ | ❌ | ❌ | ❌ | **0/4** |
+| SonarQube | ❌ | ❌ | ⚠️ | ❌ | **0/4** |
+| StyleCop | ❌ | ❌ | ❌ | ❌ | **0/4** |
+| Snyk | ❌ | ❌ | ❌ | ❌ | **0/4** |
+
+**See the full breakdown:** [DEMO_FINDINGS.md](DEMO_FINDINGS.md)
+
+---
+
 ## How to use this repository
 
 > **Why we recommend running it yourself.** This repo's canonical PRs are

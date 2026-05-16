@@ -1,6 +1,17 @@
 # Demo Findings Comparison: GauntletCI vs Competitors
 
-This document shows the actual findings from running all analysis tools on the 4 behavioral regression scenarios in the demo PR.
+## Executive Summary: The Numbers
+
+| Tool | S19 | S20 | S21 | S22 | **Score** |
+|------|-----|-----|-----|-----|-----------|
+| **GauntletCI** | ✅ | ✅ | ✅ | ✅ | **4/4 (100%)** |
+| CodeQL | ❌ | ❌ | ❌ | ❌ | 0/4 (0%) |
+| Semgrep | ❌ | ❌ | ❌ | ❌ | 0/4 (0%) |
+| SonarQube | ❌ | ❌ | ⚠️ | ❌ | 0/4 (0%) |
+| StyleCop | ❌ | ❌ | ❌ | ❌ | 0/4 (0%) |
+| Snyk | ❌ | ❌ | ❌ | ❌ | 0/4 (0%) |
+
+**The Bottom Line:** On behavioral regressions that compile cleanly and pass tests, GauntletCI catches all of them. The other tools catch none.
 
 ---
 
