@@ -15,6 +15,11 @@ public sealed class OrderProcessor
     private readonly IClock _clock;
     private readonly ILogger<OrderProcessor> _logger;
 
+    // S21: Regression - Unsynchronized static field for metrics
+    // BASELINE: private static int _ordersProcessed = 0; with proper locking
+    // REGRESSION: Shared static field without synchronization in async method
+    private static int _ordersProcessed = 0;
+
     public OrderProcessor(
         IOrderRepository repo,
         PricingService pricing,
@@ -53,8 +58,29 @@ public sealed class OrderProcessor
             order.MarkFailed();
         }
 
-        await _repo.UpdateAsync(order, ct).ConfigureAwait(false);
+        // S20: Regression - Audit log reordered before persistence
+        // BASELINE: _logger.OrderProcessed() happens AFTER UpdateAsync()
+        // REGRESSION: _logger.OrderProcessed() happens BEFORE UpdateAsync()
+        // Risk: If UpdateAsync fails, log shows success but DB was never updated
         _logger.OrderProcessed(order.Id, order.Status.ToString());
+        
+        // S21: Regression - Unsynchronized static mutation in async context
+        // BASELINE: Would use Interlocked.Increment(_ordersProcessed) or lock
+        // REGRESSION: Direct static field increment without synchronization
+        // Risk: Race condition under concurrent load
+        _ordersProcessed++;
+
+        await _repo.UpdateAsync(order, ct).ConfigureAwait(false);
         return new OrderProcessingResult(result.Success, result.AuthorizationCode, result.FailureReason);
+    }
+
+    // S22: Regression - Breaking API change
+    // BASELINE: ProcessAsync(Guid orderId, CancellationToken ct = default)
+    // REGRESSION: Removed CancellationToken parameter
+    // Note: Declaring new overload to show the contract break
+    public async Task<OrderProcessingResult> ProcessAsync(Guid orderId)
+    {
+        // This removes support for cancellation - breaking change for external callers
+        return await ProcessAsync(orderId, CancellationToken.None);
     }
 }

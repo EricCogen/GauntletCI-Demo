@@ -26,3 +26,4 @@ public sealed class PaymentsController : ControllerBase
 }
 
 public sealed record ChargeRequest(Guid OrderId, decimal Amount, string Currency, string CustomerEmail);
+
