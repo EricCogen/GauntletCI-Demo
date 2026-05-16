@@ -1,0 +1,30 @@
+name: StyleCop Analysis
+
+on:
+  push:
+    branches: [ main, feature/add-4-scenarios ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  stylecop:
+    name: StyleCop Analyzer
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build (StyleCop will run during build)
+      run: dotnet build --no-restore /p:EnforceCodeStyleInBuild=true /p:AnalysisLevel=latest
+      continue-on-error: true
+
+    - name: Report StyleCop findings
+      run: echo "StyleCop analysis complete - check build logs above for warnings"

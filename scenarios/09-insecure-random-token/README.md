@@ -1,6 +1,6 @@
-# 09 — System.Random used to mint a confirmation token
+# 09 - System.Random used to mint a confirmation token
 
-**Expected verdict:** ❌ Fails — GauntletCI should fire **GCI0048** (insecure random in security context).
+**Expected verdict:** ❌ Fails - GauntletCI should fire **GCI0048** (insecure random in security context).
 
 ## What changed
 A new helper generates the per-order email confirmation token using
@@ -32,11 +32,11 @@ attacker can recover the internal state and predict future tokens.
   email.
 - Even ignoring seeding attacks, two `new Random()` instances created
   in the same tick share a seed on older runtimes and emit identical
-  sequences — perfect for collision attacks against shared inboxes.
+  sequences - perfect for collision attacks against shared inboxes.
 - `RandomNumberGenerator.GetBytes` / `GetHexString` is one line of code
   and is the only correct primitive here.
 
 ## What GauntletCI catches
-`GCI0048 Insecure Random in Security Context` — `new Random(` appears
+`GCI0048 Insecure Random in Security Context` - `new Random(` appears
 within five lines of an identifier that names a security-sensitive
 value (here, `token`).

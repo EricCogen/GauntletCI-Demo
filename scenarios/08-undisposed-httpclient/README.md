@@ -1,6 +1,6 @@
-# 08 — HttpClient field never disposed
+# 08 - HttpClient field never disposed
 
-**Expected verdict:** ❌ Fails — GauntletCI should fire **GCI0024** (resource lifecycle).
+**Expected verdict:** ❌ Fails - GauntletCI should fire **GCI0024** (resource lifecycle).
 
 ## What changed
 A new `StripeWebhookClient` class holds a `HttpClient` as a private
@@ -29,7 +29,7 @@ socket handle outlives every request that uses it.
   a single misbehaving callback can starve the whole socket pool.
 
 ## What GauntletCI catches
-`GCI0024 Resource Lifecycle` — `new HttpClient(` allocated as a field
+`GCI0024 Resource Lifecycle` - `new HttpClient(` allocated as a field
 with no `using`, no surrounding `Dispose()` call, and no nearby
 `IHttpClientFactory` reference.
 

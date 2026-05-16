@@ -1,6 +1,6 @@
-# 11 — Floating-point equality on a money amount
+# 11 - Floating-point equality on a money amount
 
-**Expected verdict:** ❌ Fails — GauntletCI should fire **GCI0049** (float/double equality comparison).
+**Expected verdict:** ❌ Fails - GauntletCI should fire **GCI0049** (float/double equality comparison).
 
 ## What changed
 A new `LegacyDiscountCalculator` works in `double` (because it was
@@ -39,5 +39,5 @@ the comparison silently returns `false`.
   — much better for money — using `decimal` end-to-end.
 
 ## What GauntletCI catches
-`GCI0049 Float/Double Equality Comparison` — `==` (or `!=`) on the
+`GCI0049 Float/Double Equality Comparison` - `==` (or `!=`) on the
 same line as a floating-point literal in a non-test file.

@@ -1,6 +1,6 @@
-# 10 — EF column too short for real-world input
+# 10 - EF column too short for real-world input
 
-**Expected verdict:** ❌ Fails — GauntletCI should fire **GCI0050** (SQL column truncation risk).
+**Expected verdict:** ❌ Fails - GauntletCI should fire **GCI0050** (SQL column truncation risk).
 
 ## What changed
 A new EF entity configuration under `Persistence/Migrations/` declares
@@ -24,7 +24,7 @@ EF Core's default mapping) will silently **truncate** anything longer
 without raising an error.
 
 ## Why this is risky
-- Truncation is silent — the application returns success while the row
+- Truncation is silent - the application returns success while the row
   it stored is wrong. Users discover this when their forgot-password
   email never arrives.
 - Truncating an email at 50 characters can change *who* the row points
@@ -36,6 +36,6 @@ without raising an error.
   Doing neither is the bug.
 
 ## What GauntletCI catches
-`GCI0050 SQL Column Truncation Risk` — `[StringLength(N)]` (or
+`GCI0050 SQL Column Truncation Risk` - `[StringLength(N)]` (or
 `HasMaxLength(N)` / `nvarchar(N)`) with `N < 100` in a file under a
 path containing `migration` / `dbcontext` / `entityconfig` / `schema`.

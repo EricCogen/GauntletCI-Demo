@@ -1,7 +1,7 @@
 # GauntletCI Demo
 
-> A live, runnable showcase of [**GauntletCI**](https://gauntletci.com) — a
-> deterministic pre-commit risk detector for .NET — operating on real GitHub
+> A live, runnable showcase of [**GauntletCI**](https://gauntletci.com) - a
+> deterministic pre-commit risk detector for .NET - operating on real GitHub
 > pull requests.
 >
 > **🔗 Main repository:** https://github.com/EricCogen/GauntletCI
@@ -13,11 +13,11 @@
 
 This repo is **not** a working application. It is a controlled demonstration
 environment whose only purpose is to let you see GauntletCI's output on
-realistic code changes — without installing anything yourself.
+realistic code changes - without installing anything yourself.
 
 It contains:
 
-1. A **small but realistic .NET 8 sample app** (`OrderService` — a payment
+1. A **small but realistic .NET 8 sample app** (`OrderService` - a payment
    processing service with a payment client and an order processor), so the
    diffs being analyzed look like code you'd actually write.
 2. A **GitHub Actions workflow** (`.github/workflows/gauntlet.yml`) that
@@ -36,7 +36,7 @@ It contains:
 ## What this repository is *not*
 
 - ❌ Not a production-quality reference architecture for `OrderService`.
-- ❌ Not a place to file GauntletCI bugs or feature requests — please use
+- ❌ Not a place to file GauntletCI bugs or feature requests - please use
   the [main repo's issues](https://github.com/EricCogen/GauntletCI/issues).
 - ❌ Not a substitute for real-world testing on your own codebase. Run
   `gauntletci analyze` on your own diffs to see findings tuned to your
@@ -52,10 +52,6 @@ It contains:
 ---
 
 ## Want to See GauntletCI's Competitive Advantage?
-
-**Switch to the [`feature/add-4-scenarios`](https://github.com/EricCogen/GauntletCI-Demo/tree/feature/add-4-scenarios) branch** for the live competitive analysis.
-
-### The Headline
 
 **18 behavioral regression scenarios** across 6 risk domains. Here's what each tool detects:
 
@@ -79,20 +75,34 @@ Each scenario is a **realistic production bug** that:
 
 ### See It Live
 
-On the `feature/add-4-scenarios` branch, all tools run live via GitHub Actions:
+All tools run live via GitHub Actions:
 - **DEMO_FINDINGS.md** - Detailed tool-by-tool comparison across all 18 scenarios
 - **Live PRs** - Each scenario runs CodeQL, Semgrep, SonarQube, StyleCop, Snyk, and GauntletCI
 - **The Verdict** - See the 18/18 vs 0/18 scorecard in action
 - **36 Total Scenarios** - Tier 1 (6), Tier 2 (12), Tier 3 (18)
 
-👉 **[Browse the feature branch](https://github.com/EricCogen/GauntletCI-Demo/tree/feature/add-4-scenarios)**
+---
+
+## How to Verify This Yourself
+
+**Fastest way:** Fork this repo, enable Actions, run workflow `Reopen demo scenarios`
+
+All analysis tools run live on every PR via GitHub Actions in `.github/workflows/`:
+- `codeql.yml` - runs CodeQL on every PR
+- `semgrep.yml` - runs Semgrep on every PR
+- `stylecop.yml` - runs StyleCop enforcement on every PR
+- `snyk.yml` - runs Snyk on every PR
+- `gauntletci.yml` - runs GauntletCI on every PR
+
+You'll see the findings (or lack thereof) in real time. No downloads, no local setup required—just fork, enable workflows, and watch the PRs.
+>>>>>>> ed77da6aade0590fd43ac0bd0a4d980dd9b17810
 
 ---
 
 ## How to use this repository
 
 > **Why we recommend running it yourself.** This repo's canonical PRs are
-> intentionally read-only — we keep them as a stable, predictable showcase
+> intentionally read-only - we keep them as a stable, predictable showcase
 > rather than letting visitors mutate them. To experiment freely (try your
 > own diffs, edit scenarios, see what triggers what), **clone or fork** and
 > run the demo on your own copy. The two paths below cover both styles.
@@ -104,11 +114,11 @@ runs, you can poke at anything without breaking the demo for the next
 visitor.
 
 > **Prerequisites (both paths):**
-> - **.NET 8 SDK** — install from <https://dotnet.microsoft.com/download/dotnet/8.0> (the demo CI uses `8.0.x`)
-> - **Git** — any recent version
-> - **A GitHub account** — only required for the fork path
+> - **.NET 8 SDK** - install from <https://dotnet.microsoft.com/download/dotnet/8.0> (the demo CI uses `8.0.x`)
+> - **Git** - any recent version
+> - **A GitHub account** - only required for the fork path
 
-#### Option 1 — Fork and use GitHub Actions
+#### Option 1 - Fork and use GitHub Actions
 
 1. **Fork** [`EricCogen/GauntletCI-Demo`](https://github.com/EricCogen/GauntletCI-Demo)
    to your account.
@@ -136,15 +146,15 @@ visitor.
   in your fork's **Pull requests** tab, each with a green or red
   **GauntletCI** check (matching the verdict in
   [`scenarios/<id>/README.md`](scenarios/)).
-- ❌ *No PRs appeared* — most often the Actions tab still has the disable
+- ❌ *No PRs appeared* - most often the Actions tab still has the disable
   banner. Re-check step 2.
-- ❌ *Workflow failed in `Install GauntletCI` step* — usually a transient
+- ❌ *Workflow failed in `Install GauntletCI` step* - usually a transient
   NuGet outage. Re-run from the **Actions** tab.
-- ❌ *Workflow failed in `Open PR` step with 403* — your fork has branch
+- ❌ *Workflow failed in `Open PR` step with 403* - your fork has branch
   protection on `main` that blocks the bot. Either remove the rule or
   set `DEMO_PR_TOKEN` to a PAT that can bypass it.
 
-#### Option 2 — Clone and run locally
+#### Option 2 - Clone and run locally
 
 This path is fastest if you already have the .NET 8 SDK on your machine.
 
@@ -191,14 +201,14 @@ second, on your own machine.
 - ✅ Expected: console output ending in `🛑 Block` with a `[GCI0007] Error
   Handling Integrity` finding pointing at the silent `catch { }` block
   that the scenario introduces.
-- ❌ *`gauntletci: command not found`* — the dotnet global tools folder
+- ❌ *`gauntletci: command not found`* - the dotnet global tools folder
   isn't on your `PATH`. Either restart your shell or add
   `$HOME/.dotnet/tools` (Unix) / `%USERPROFILE%\.dotnet\tools` (Windows)
   to `PATH`.
 - ❌ *`error: pathspec 'scenarios/02-silent-catch/files/.' did not match
-  any file(s)`* — you're not in the repo root. Run `cd GauntletCI-Demo`
+  any file(s)`* - you're not in the repo root. Run `cd GauntletCI-Demo`
   first.
-- ❌ *Tool installs but `analyze --staged` reports `0 findings`* — the
+- ❌ *Tool installs but `analyze --staged` reports `0 findings`* - the
   scenario files weren't actually staged. Check `git status` and re-run
   `git add -A`.
 
@@ -210,11 +220,11 @@ up:
 1. Open the **[Pull Requests tab](https://github.com/EricCogen/GauntletCI-Demo/pulls)**.
 2. Pick any open PR labelled `demo:*`.
 3. Look at:
-   - The **Files Changed** tab — GauntletCI's inline annotations appear
+   - The **Files Changed** tab - GauntletCI's inline annotations appear
      alongside the diff lines that triggered them.
-   - The **Conversation** tab — GauntletCI posts a PR review summarising
+   - The **Conversation** tab - GauntletCI posts a PR review summarising
      the findings, severity, and rationale.
-   - The **Checks** tab — a GauntletCI check run shows the overall
+   - The **Checks** tab - a GauntletCI check run shows the overall
      pass/fail verdict.
 
 The expected verdict for each scenario is documented in its
@@ -232,16 +242,18 @@ go to **Actions → Reopen demo scenarios → Run workflow**.
 
 ## Scenarios
 
+### Tier 1 - headline scenarios
+
 | # | Scenario | Expected verdict | Rule(s) demonstrated |
 |---|----------|------------------|----------------------|
-| 01 | [safe-typo-fix](scenarios/01-safe-typo-fix/README.md) | ✅ Clean | (none — low-noise control) |
+| 01 | [safe-typo-fix](scenarios/01-safe-typo-fix/README.md) | ✅ Clean | (none - low-noise control) |
 | 02 | [silent-catch](scenarios/02-silent-catch/README.md) | 🛑 Block | `GCI0007` Error Handling Integrity |
 | 03 | [hardcoded-secret](scenarios/03-hardcoded-secret/README.md) | 🛑 Block | `GCI0012` Security Risk |
 | 04 | [breaking-api-change](scenarios/04-breaking-api-change/README.md) | 🛑 Block | `GCI0004` Breaking Change Risk |
 | 05 | [pii-logging](scenarios/05-pii-logging/README.md) | ⚠️ Warn | `GCI0029` PII Logging Leak |
 | 06 | [concurrency-race](scenarios/06-concurrency-race/README.md) | 🛑 Block | `GCI0016` Concurrency & State Risk |
 
-### Tier 2 — one scenario per rule
+### Tier 2 - one scenario per rule
 
 A second wave of scenarios, each isolating a single GauntletCI rule on
 the same `OrderService` sample app. Verdict for every Tier 2 entry is
@@ -262,10 +274,121 @@ the same `OrderService` sample app. Verdict for every Tier 2 entry is
 | 17 | [captive-dependency](scenarios/17-captive-dependency/README.md) | `GCI0038` Dependency Injection Safety |
 | 18 | [dependabot-api-drift](scenarios/18-dependabot-api-drift/README.md) | `GCI0052` Dependency Bot API Drift |
 
+### Tier 3 - behavioral regression scenarios (expanded)
+
+**18 advanced behavioral regression scenarios** designed to demonstrate GauntletCI's **unique ability to detect changes that pass traditional analysis tools** (SonarQube, CodeQL, Semgrep, StyleCop, Snyk). Each scenario shows a realistic production bug that compiles successfully but represents a critical regression.
+
+**Key finding:** GauntletCI detects all 18 Tier 3 scenarios; competitors detect 0/18 on average.
+See [DEMO_FINDINGS.md](DEMO_FINDINGS.md) for the complete comparison.
+
+#### Security & Access Control (S19, S23, S24)
+
+| # | Scenario | Production Impact |
+|---|----------|------------------|
+| 19 | [access-control-drop](scenarios/19-access-control-drop/README.md) | Security attribute stripped during refactoring |
+| 23 | [role-based-bypass](scenarios/23-role-based-bypass/README.md) | Authorization check moved inside conditional branch |
+| 24 | [encryption-key-rotation-removal](scenarios/24-encryption-key-rotation-removal/README.md) | Decryption logic simplified, breaking old encrypted data |
+
+#### Concurrency & Async (S21, S25, S26, S27)
+
+| # | Scenario | Production Impact |
+|---|----------|------------------|
+| 21 | [static-mutation-async](scenarios/21-static-mutation-async/README.md) | Unsynchronized static mutation in async context |
+| 25 | [async-without-await](scenarios/25-async-without-await/README.md) | Async method called without await, losing exceptions |
+| 26 | [lock-scope-reduction](scenarios/26-lock-scope-reduction/README.md) | Critical section narrowed, exposing race conditions |
+| 27 | [task-result-deadlock](scenarios/27-task-result-deadlock/README.md) | Sync-over-async pattern causes hangs |
+
+#### Data Integrity & Business Logic (S20, S28, S29, S30)
+
+| # | Scenario | Production Impact |
+|---|----------|------------------|
+| 20 | [audit-log-inversion](scenarios/20-audit-log-inversion/README.md) | Execution order mutation breaks compliance logging |
+| 28 | [transaction-rollback-repositioning](scenarios/28-transaction-rollback-repositioning/README.md) | Rollback point moved, committing partial changes |
+| 29 | [idempotency-key-removed](scenarios/29-idempotency-key-removed/README.md) | Duplicate detection removed, enabling duplicate charges |
+| 30 | [cascade-delete-to-restrict](scenarios/30-cascade-delete-to-restrict/README.md) | Delete behavior changed, orphaning related records |
+
+#### API Contracts & Versioning (S22, S31, S32)
+
+| # | Scenario | Production Impact |
+|---|----------|------------------|
+| 22 | [breaking-api-contract](scenarios/22-breaking-api-contract/README.md) | Public API parameter removed without version bump |
+| 31 | [exception-contract-violation](scenarios/31-exception-contract-violation/README.md) | Documented exception no longer thrown, breaking consumers |
+| 32 | [implicit-type-coercion-change](scenarios/32-implicit-type-coercion-change/README.md) | Conversion logic simplified, changing edge case behavior |
+
+#### Performance & Resource Management (S33, S34)
+
+| # | Scenario | Production Impact |
+|---|----------|------------------|
+| 33 | [cache-lookup-removed](scenarios/33-cache-lookup-removed/README.md) | Cache bypass added, causing database load spike |
+| 34 | [connection-pooling-disabled](scenarios/34-connection-pooling-disabled/README.md) | Connection pooling disabled, connection storm |
+
+#### Dependency Injection & Scoping (S35, S36)
+
+| # | Scenario | Production Impact |
+|---|----------|------------------|
+| 35 | [service-locator-anti-pattern](scenarios/35-service-locator-anti-pattern/README.md) | Dependency resolved from service locator, untestable |
+| 36 | [singleton-captures-scoped](scenarios/36-singleton-captures-scoped/README.md) | Scoped dependency captured by singleton, data leakage |
+
 Each scenario folder contains:
-- `README.md` — what the change is and what verdict to expect
-- `files/` — the overlay files that get copied onto `main` to construct
-  the demo branch
+- `README.md` - what the change is and what verdict to expect
+- `files/` - the overlay files that get copied onto `main` to construct the demo branch
+
+---
+
+## Competitive Analysis: Multi-Tool CI/CD Pipeline
+
+The demo now includes automated CI/CD workflows that run **5 complementary analysis
+tools** on every PR. This hybrid approach lets you see real findings from free tools
+and compare them against GauntletCI's behavior detection.
+
+**Tier 3 expansion:** Now testing 18 behavioral regression scenarios against all 5 tools
+to maximize evidence of GauntletCI's competitive advantage.
+
+### Tools included
+
+| Tool | Type | Purpose | Free | Runs in CI |
+|------|------|---------|------|-----------|
+| **CodeQL** | Data flow | Security taint tracking | ✅ | ✅ |
+| **Semgrep** | Pattern-based | Custom rule matching | ✅ | ✅ |
+| **StyleCop** | Enforcement | C# style rules | ✅ | ✅ |
+| **Snyk** | Dependency | Vulnerability scanning | ✅ | ✅ |
+| **GauntletCI** | Behavioral | Regression detection | ✅ | ✅ |
+
+### Findings Comparison
+
+See [**DEMO_FINDINGS.md**](DEMO_FINDINGS.md) for the complete breakdown of what each
+tool finds (or misses) on the Tier 3 scenarios.
+
+**Quick summary:** On behavioral regressions (Tier 3 scenarios - now 18 scenarios across 6 categories):
+- GauntletCI: ✅ Detects behavioral changes in all scenarios
+- CodeQL, Semgrep, SonarQube, Snyk, StyleCop: ❌ Miss behavioral regressions consistently
+
+**Coverage:**
+- Security & Access Control: 3 scenarios
+- Concurrency & Async: 4 scenarios
+- Data Integrity & Business Logic: 4 scenarios
+- API Contracts & Versioning: 3 scenarios
+- Performance & Resource Management: 2 scenarios
+- Dependency Injection & Scoping: 2 scenarios
+
+This demonstrates why teams use multiple tools in a unified CI/CD pipeline:
+each specializes in different risk categories, and GauntletCI fills the critical
+gap in behavioral regression detection.
+
+### Run the multi-tool pipeline yourself
+
+The workflows in `.github/workflows/` run automatically on every PR:
+
+```bash
+# Create a test PR
+git checkout -b test/try-scenarios main
+cp -r scenarios/19-access-control-drop/files/. .
+git add -A && git commit -m "test: behavioral regression scenario"
+git push origin test/try-scenarios
+```
+
+Then open a PR to `main`. GitHub Actions will run all 5 tools and post findings
+in the **Checks** tab. Compare the results against [DEMO_FINDINGS.md](DEMO_FINDINGS.md).
 
 ---
 
@@ -285,7 +408,7 @@ demo also serves as a smoke test of the published tool:
       --github-checks
 ```
 
-No build-from-source, no pre-release feeds — just `dotnet tool install`
+No build-from-source, no pre-release feeds - just `dotnet tool install`
 from NuGet.
 
 ---
@@ -296,14 +419,14 @@ from NuGet.
 GauntletCI-Demo/
 ├── src/OrderService/             # sample .NET 8 app
 ├── tests/OrderService.Tests/     # xUnit tests for the sample app
-├── scenarios/                    # canonical demo scenarios (18 total)
-│   ├── 01-safe-typo-fix/         # tier 1 — control + 5 headline rules
+├── scenarios/                    # canonical demo scenarios (22 total)
+│   ├── 01-safe-typo-fix/         # tier 1 - control + 5 headline rules
 │   ├── 02-silent-catch/
 │   ├── 03-hardcoded-secret/
 │   ├── 04-breaking-api-change/
 │   ├── 05-pii-logging/
 │   ├── 06-concurrency-race/
-│   ├── 07-magic-connection-string/  # tier 2 — one rule per scenario
+│   ├── 07-magic-connection-string/  # tier 2 - one rule per scenario
 │   ├── 08-undisposed-httpclient/
 │   ├── 09-insecure-random-token/
 │   ├── 10-sql-column-truncation/
@@ -314,11 +437,23 @@ GauntletCI-Demo/
 │   ├── 15-non-idempotent-retry/
 │   ├── 16-tolist-in-loop/
 │   ├── 17-captive-dependency/
-│   └── 18-dependabot-api-drift/
+│   ├── 18-dependabot-api-drift/
+│   ├── 19-access-control-drop/      # tier 3 - behavioral regressions
+│   ├── 20-audit-log-inversion/
+│   ├── 21-static-mutation-async/
+│   └── 22-breaking-api-contract/
 ├── .github/workflows/
 │   ├── gauntlet.yml              # PR check that runs GauntletCI
-│   └── reopen-scenarios.yml      # rebuilds scenario branches on demand
+│   ├── reopen-scenarios.yml      # rebuilds scenario branches on demand
+│   ├── codeql.yml                # CodeQL security analysis
+│   ├── semgrep.yml               # Semgrep pattern scanning
+│   ├── stylecop.yml              # StyleCop enforcement
+│   ├── snyk.yml                  # Snyk dependency scanning
+│   └── gauntletci.yml            # GauntletCI behavioral analysis
 ├── scripts/reopen-scenarios.sh   # logic for the rebuild workflow
+├── DEMO_FINDINGS.md              # multi-tool findings comparison
+├── COMPETITOR_COMPARISON.md      # detailed tool analysis
+├── HYBRID_DEMO_IMPLEMENTATION.md # CI/CD pipeline documentation
 ├── .gauntletci.json              # GauntletCI rule configuration
 ├── .gauntletci-ignore            # path-scoped rule suppressions
 └── OrderService.sln
@@ -335,4 +470,4 @@ GauntletCI-Demo/
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT - see [LICENSE](LICENSE).

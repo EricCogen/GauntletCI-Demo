@@ -1,6 +1,6 @@
-# 05 — PII logged in payment success path
+# 05 - PII logged in payment success path
 
-**Expected verdict:** ❌ Fails — GauntletCI should fire **GCI0029** (PII in logs).
+**Expected verdict:** ❌ Fails - GauntletCI should fire **GCI0029** (PII in logs).
 
 ## What changed
 A new `LogInformation` call in `OrderProcessor.ProcessAsync` writes the
@@ -23,5 +23,5 @@ _logger.LogInformation(
   systems.
 
 ## What GauntletCI catches
-`GCI0029 PII in logs` — a structured log argument named `Email` (or
+`GCI0029 PII in logs` - a structured log argument named `Email` (or
 matching email-like patterns) is being emitted to a logger.

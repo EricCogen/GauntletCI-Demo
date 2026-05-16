@@ -1,6 +1,6 @@
-# 13 — New `throw new Exception(...)` path with no test coverage
+# 13 - New `throw new Exception(...)` path with no test coverage
 
-**Expected verdict:** ❌ Fails — GauntletCI should fire **GCI0032** (uncaught exception path).
+**Expected verdict:** ❌ Fails - GauntletCI should fire **GCI0032** (uncaught exception path).
 
 ## What changed
 `PricingService` gains a new validation helper that throws a bare
@@ -32,7 +32,7 @@ test project.
   `Assert.Throws<ArgumentOutOfRangeException>(...)` test.
 
 ## What GauntletCI catches
-`GCI0032 Uncaught Exception Path` — one or more `throw new` statements
+`GCI0032 Uncaught Exception Path` - one or more `throw new` statements
 in non-test files in the diff, with no corresponding throw-assertion
 (`Assert.Throws`, `Should().Throw`, `ThrowsAsync`, `Throws<…>`) in any
 test file in the same diff.

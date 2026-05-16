@@ -1,6 +1,6 @@
-# 14 — TODO comment on the payment success path
+# 14 - TODO comment on the payment success path
 
-**Expected verdict:** ❌ Fails — GauntletCI should fire **GCI0042** (TODO/stub detection).
+**Expected verdict:** ❌ Fails - GauntletCI should fire **GCI0042** (TODO/stub detection).
 
 ## What changed
 `PaymentClient.ChargeAsync` gains a `// TODO` marker in the
@@ -38,6 +38,6 @@ gets revisited.
   intent is tracked outside the source.
 
 ## What GauntletCI catches
-`GCI0042 TODO/Stub Detection` — added line in a non-test file
+`GCI0042 TODO/Stub Detection` - added line in a non-test file
 contains `TODO` (also `FIXME`, `HACK`, or `throw new
 NotImplementedException`) and is not an XML doc-comment line.

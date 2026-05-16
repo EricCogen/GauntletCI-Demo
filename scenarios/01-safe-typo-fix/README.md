@@ -1,6 +1,6 @@
-# 01 — Safe typo / wording fix (clean)
+# 01 - Safe typo / wording fix (clean)
 
-**Expected verdict:** ✅ Clean — GauntletCI should produce no findings.
+**Expected verdict:** ✅ Clean - GauntletCI should produce no findings.
 
 ## What changed
 A cosmetic fix in `src/OrderService/Logging/RequestLogger.cs`:

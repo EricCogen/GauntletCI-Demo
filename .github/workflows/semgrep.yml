@@ -1,0 +1,24 @@
+name: Semgrep Analysis
+
+on:
+  push:
+    branches: [ main, feature/add-4-scenarios ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  semgrep:
+    name: Semgrep Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Run Semgrep
+      uses: returntocorp/semgrep-action@v1.76.0
+      with:
+        config: >-
+          p/security-audit
+          p/csharp
+          p/owasp-top-ten
+      continue-on-error: true

@@ -1,0 +1,29 @@
+name: Snyk Security Scan
+
+on:
+  push:
+    branches: [ main, feature/add-4-scenarios ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  snyk:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Run Snyk to check for vulnerabilities
+      uses: snyk/actions/dotnet@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        args: --severity-threshold=low
+      continue-on-error: true
+
+    - name: Upload Snyk results to GitHub Security
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: snyk.sarif
+      continue-on-error: true

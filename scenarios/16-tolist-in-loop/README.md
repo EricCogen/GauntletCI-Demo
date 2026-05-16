@@ -1,6 +1,6 @@
-# 16 — LINQ scan inside a per-request loop
+# 16 - LINQ scan inside a per-request loop
 
-**Expected verdict:** ❌ Fails — GauntletCI should fire **GCI0044** (performance hot-path risk).
+**Expected verdict:** ❌ Fails - GauntletCI should fire **GCI0044** (performance hot-path risk).
 
 ## What changed
 A new `OrderItemDeduplicator` runs a `Where` scan inside a `foreach`
@@ -41,7 +41,7 @@ about it falls over.
   in this codebase shape; GauntletCI flags it before the n grows.
 
 ## What GauntletCI catches
-`GCI0044 Performance Hotpath Risk` — a LINQ method (`.Where(`,
+`GCI0044 Performance Hotpath Risk` - a LINQ method (`.Where(`,
 `.Select(`, `.FirstOrDefault(`, `.Any(`, `.Count(`) on an added line
 nested inside a `for`/`foreach`/`while` loop in a non-test, non-rule
 file.
