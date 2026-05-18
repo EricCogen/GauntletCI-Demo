@@ -9,7 +9,7 @@ public sealed class FakePaymentClient : IPaymentClient
 
     public List<PaymentRequest> Calls { get; } = new();
 
-    public Task<PaymentResult> ChargeAsync(PaymentRequest request, CancellationToken ct = default)
+    public Task<PaymentResult> ChargeAsync(PaymentRequest request)
     {
         Calls.Add(request);
         return Task.FromResult(Responder(request));
