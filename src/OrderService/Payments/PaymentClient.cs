@@ -34,6 +34,7 @@ public sealed class PaymentClient : IPaymentClient
             {
                 return new PaymentResult(false, null, "Amount must be positive.");
             }
+            // TODO: emit payment.succeeded webhook for downstream reconciliation
             return new PaymentResult(true, $"AUTH-{Guid.NewGuid():N}", null);
         }, ct);
     }
