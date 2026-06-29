@@ -2,5 +2,5 @@ namespace OrderService.Payments;
 
 public interface IPaymentClient
 {
-    Task<PaymentResult> ChargeAsync(PaymentRequest request, CancellationToken ct = default);
+    Task<PaymentResult> ChargeAsync(PaymentRequest request);
 }
