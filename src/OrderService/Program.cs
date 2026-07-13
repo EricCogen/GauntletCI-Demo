@@ -1,4 +1,5 @@
 using OrderService.Abstractions;
+using OrderService.Background;
 using OrderService.Logging;
 using OrderService.Payments;
 using OrderService.Persistence;
@@ -20,6 +21,11 @@ builder.Services.AddSingleton(_ => new RetryPolicy(maxAttempts: 3));
 builder.Services.Configure<StripeOptions>(builder.Configuration.GetSection("Stripe"));
 builder.Services.AddSingleton<IPaymentClient, PaymentClient>();
 builder.Services.AddScoped<OrderProcessor>();
+
+builder.Services.AddSingleton<OrderReminderBackgroundService>();
+builder.Services.AddHostedService(sp =>
+    sp.GetRequiredService<OrderReminderBackgroundService>());
+builder.Services.AddScoped<IOrderEventEmitter, OrderEventEmitter>();
 
 var app = builder.Build();
 app.MapControllers();
