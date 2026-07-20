@@ -16,7 +16,7 @@ public sealed class PaymentClient : IPaymentClient
         _logger = logger;
     }
 
-    public Task<PaymentResult> ChargeAsync(PaymentRequest request, CancellationToken ct = default)
+    public Task<PaymentResult> ChargeAsync(PaymentRequest request)
     {
         if (string.IsNullOrEmpty(_options.ApiKey))
         {
@@ -35,6 +35,6 @@ public sealed class PaymentClient : IPaymentClient
                 return new PaymentResult(false, null, "Amount must be positive.");
             }
             return new PaymentResult(true, $"AUTH-{Guid.NewGuid():N}", null);
-        }, ct);
+        });
     }
 }
