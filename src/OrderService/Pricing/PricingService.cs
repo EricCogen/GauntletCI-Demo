@@ -24,4 +24,9 @@ public sealed class PricingService
         var total = taxable.Add(tax);
         return new PricedOrder(subtotal, discount, tax, total);
     }
+
+    public Money ApplyShipping(Money subtotal, Money shipping)
+    {
+        return subtotal.Add(shipping);
+    }
 }
