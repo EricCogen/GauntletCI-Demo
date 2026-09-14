@@ -23,6 +23,18 @@ public sealed class PaymentsController : ControllerBase
             ct);
         return result.Success ? Ok(result) : UnprocessableEntity(result);
     }
+
+    [HttpPost("{id:guid}/retry")]
+    public async Task<ActionResult<PaymentResult>> Retry(
+        Guid id,
+        [FromBody] ChargeRequest request,
+        CancellationToken ct)
+    {
+        var result = await _payments.ChargeAsync(
+            new PaymentRequest(request.OrderId, new Money(request.Amount, request.Currency), request.CustomerEmail),
+            ct);
+        return result.Success ? Ok(result) : UnprocessableEntity(result);
+    }
 }
 
 public sealed record ChargeRequest(Guid OrderId, decimal Amount, string Currency, string CustomerEmail);
