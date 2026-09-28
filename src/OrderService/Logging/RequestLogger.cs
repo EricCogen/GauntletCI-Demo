@@ -13,6 +13,6 @@ public sealed class RequestLogger
 
     public void LogIncoming(string method, string path, string? correlationId)
         => _logger.LogInformation(
-            "HTTP {Method} {Path} cid={CorrelationId}",
+            "Http {Method} {Path} correlationId={CorrelationId}",
             method, path, correlationId ?? "-");
 }
