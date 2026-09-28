@@ -24,4 +24,13 @@ public sealed class PricingService
         var total = taxable.Add(tax);
         return new PricedOrder(subtotal, discount, tax, total);
     }
+
+    public Money RequireNonNegative(Money amount)
+    {
+        if (amount.Amount < 0m)
+        {
+            throw new Exception($"Amount must be non-negative: {amount.Amount}");
+        }
+        return amount;
+    }
 }
