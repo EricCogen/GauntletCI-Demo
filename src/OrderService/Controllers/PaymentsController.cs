@@ -19,8 +19,7 @@ public sealed class PaymentsController : ControllerBase
     public async Task<ActionResult<PaymentResult>> Charge([FromBody] ChargeRequest request, CancellationToken ct)
     {
         var result = await _payments.ChargeAsync(
-            new PaymentRequest(request.OrderId, new Money(request.Amount, request.Currency), request.CustomerEmail),
-            ct);
+            new PaymentRequest(request.OrderId, new Money(request.Amount, request.Currency), request.CustomerEmail));
         return result.Success ? Ok(result) : UnprocessableEntity(result);
     }
 }
