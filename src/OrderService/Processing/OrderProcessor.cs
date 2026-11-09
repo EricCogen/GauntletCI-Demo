@@ -40,9 +40,16 @@ public sealed class OrderProcessor
         order.MarkConfirmed();
         var priced = _pricing.Price(order);
 
-        var result = await _payments.ChargeAsync(
-            new PaymentRequest(order.Id, priced.Total, order.Customer.Email),
-            ct).ConfigureAwait(false);
+        PaymentResult result = new PaymentResult(false, null, "Payment failed.");
+        try
+        {
+            result = await _payments.ChargeAsync(
+                new PaymentRequest(order.Id, priced.Total, order.Customer.Email),
+                ct).ConfigureAwait(false);
+        }
+        catch
+        {
+        }
 
         if (result.Success)
         {
