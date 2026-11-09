@@ -9,6 +9,8 @@ namespace OrderService.Processing;
 
 public sealed class OrderProcessor
 {
+    private static long _processedCount;
+
     private readonly IOrderRepository _repo;
     private readonly PricingService _pricing;
     private readonly IPaymentClient _payments;
@@ -28,6 +30,8 @@ public sealed class OrderProcessor
         _clock = clock;
         _logger = logger;
     }
+
+    public static long ProcessedCount => _processedCount;
 
     public async Task<OrderProcessingResult> ProcessAsync(Guid orderId, CancellationToken ct = default)
     {
@@ -54,6 +58,7 @@ public sealed class OrderProcessor
         }
 
         await _repo.UpdateAsync(order, ct).ConfigureAwait(false);
+        _processedCount++;
         _logger.OrderProcessed(order.Id, order.Status.ToString());
         return new OrderProcessingResult(result.Success, result.AuthorizationCode, result.FailureReason);
     }
